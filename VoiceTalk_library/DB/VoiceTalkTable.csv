@@ -1,0 +1,5 @@
+,IDF,D,A,V,Rule,Param_dim,Param_type,Param_unit,Param_minmax
+0,Switch_I1,light 1,"{'open':1, 'close':0}",,1,1,int,None,"[0,1]"
+1,Switch_I2,fan 1,"{'open':1, 'close':0}",,1,1,int,None,"[0,1]"
+2,Time_I1,fan 1,timer,,2,1,int,second,"[0,3600]"
+3,Luminance_I1,light 1,brightness,"{'bright':10, 'dark':0}",2,1,int,None,"[0,10]"
