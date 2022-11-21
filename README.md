@@ -2,6 +2,7 @@
 
 This repository is designed as a library of the DeviceTalk.
 In order to utilize this library, please follow [VoiceTalk User Guide](https://hackmd.io/z-TuqWodS7-G6TmZUWZbvg) to setup VoiceTalk service.
+
 For developers to matain and upgrade VoiceTalk, follow [VoiceTalk Developer Guide](https://hackmd.io/ioh87B5cTVqsXU_WukYtgA)
 
 For furthor description about DeviceTalk, please visit [DeviceTalk Documentation](https://hackmd.io/@Eric-Pwg/SJWlETzj5/https%3A%2F%2Fhackmd.io%2F%40Eric-Pwg%2FB1W18mViq)
