@@ -1,12 +1,10 @@
 # Voicetalk Library
 
-This repository is designed as a library of the DeviceTalk.
-In order to utilize this library, please follow [VoiceTalk User Guide](https://hackmd.io/z-TuqWodS7-G6TmZUWZbvg) to setup VoiceTalk service.
-
-For developers to matain and upgrade VoiceTalk, follow [VoiceTalk Developer Guide](https://hackmd.io/ioh87B5cTVqsXU_WukYtgA)
-
-For furthor description about DeviceTalk, please visit [DeviceTalk Documentation](https://hackmd.io/@Eric-Pwg/SJWlETzj5/https%3A%2F%2Fhackmd.io%2F%40Eric-Pwg%2FB1W18mViq)
-This Library follows the rule of [DeviceTalk: Library file Architecture](https://hackmd.io/@Eric-Pwg/SJWlETzj5/https%3A%2F%2Fhackmd.io%2F%40Eric-Pwg%2FB15oVAaO9)
+This repository is designed as a library of the DeviceTalk.  
+In order to utilize this library, please follow [VoiceTalk User Guide](https://hackmd.io/z-TuqWodS7-G6TmZUWZbvg) to setup VoiceTalk service.  
+* For developers to matain and upgrade VoiceTalk, follow [VoiceTalk Developer Guide](https://hackmd.io/ioh87B5cTVqsXU_WukYtgA).
+* For furthor description about DeviceTalk, please visit [DeviceTalk Documentation](https://hackmd.io/@Eric-Pwg/SJWlETzj5/https%3A%2F%2Fhackmd.io%2F%40Eric-Pwg%2FB1W18mViq).
+* This Library follows the rule of [DeviceTalk: Library file Architecture](https://hackmd.io/@Eric-Pwg/SJWlETzj5/https%3A%2F%2Fhackmd.io%2F%40Eric-Pwg%2FB15oVAaO9).
 
 ## Requirement
 
@@ -23,6 +21,7 @@ The followings are required if the user need full access to microphone on web.
 For testing, navigate to `chrome://flags/#unsafely-treat-insecure-origin-as-secure` in any chromium based browser(Chrome, Edge, etc.).
 Find and enable the `Insecure origins treated as secure section`. Add the addresses (VoiceTalk address) you want to ignore the secure origin policy for. Remember to include the port number. 
 Save and restart the browser.
+
 **Remember this quick testing is for dev purposes only.**
 
 
