@@ -71,7 +71,7 @@ def initTable():
     
     
     print("init Table", list_D, list_A, list_V)
-    list_all = list_D+list_F+list_V
+    list_all = list_D+list_A+list_V
     #obtain doc object for each word in the list and store it in a list
     D = [nlp(d) for d in list_D]
     A = [nlp(a) for a in list_A]
@@ -116,7 +116,7 @@ def initTable():
 
 # ========= chinese number redirection(word) ========
 def chinese_numredirection(wordlist):
-    df = pd.read_csv("dict/zhTW/num_zh.txt")
+    df = pd.read_csv("../DB/cmnHantTW/number_chinese.txt")
     for idx in range(len(wordlist)):
         zh_df = df.loc[(df['text1'] == wordlist[idx]) | (df['text2'] == wordlist[idx]) ]
         if(len(zh_df.index)>0):
@@ -126,7 +126,7 @@ def chinese_numredirection(wordlist):
     return wordlist
 
 def spellCorrection(sentence):
-    df = pd.read_csv("dict/zhTW/correction/correction.txt")
+    df = pd.read_csv("../DB/cmnHantTW/correction.txt")
     wrongwordlist = list(df['wrong'])
     print(wrongwordlist)
     for wrongword in wrongwordlist:
@@ -314,7 +314,7 @@ def handleEntity(Type, Context):
 # === aliasRedirection(tokendict, tokenlist)
 
 def aliasRedirection(tokendict, tokenlist):        
-    tokenlist = [tokendict['A'], tokendict['D'], tokendict['F'], tokendict['V'], tokenlist[4]]
+    tokenlist = [tokendict['D'], tokendict['A'], tokendict['V'], tokenlist['3']]
     print("[alias Redirect] Result:", tokenlist)
     return tokenlist
 

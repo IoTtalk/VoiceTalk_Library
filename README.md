@@ -68,5 +68,5 @@ for more information, visit [enspaCy official site](https://spacy.io/usage)
 ### VoiceTalk Support Browser:
 * Chrome
 * Edge
-* Safari
+* Safari  
 (Firefox is not support in VoiceTalk due to the limitation of Web Speech API)
