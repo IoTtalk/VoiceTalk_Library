@@ -1,6 +1,1 @@
 IDF,D,A,V
-Switch_I1,light 1,open,[1]
-Switch_I2,fan 1,open,[1]
-Time_I1,fan 1,timer,[600]
-Switch_I2,fan 1,open,[1]
-Switch_I1,light,open,[1]
