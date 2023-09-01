@@ -7,9 +7,10 @@ import time, random, requests
 # import TWnlp #uncomment later
 import USnlp
 import config
+import csv
+import ast
 
-
-
+import whisper
 
 # define error message format:
 # 1: rule1, 2: rule2, <0: error
@@ -22,6 +23,9 @@ import config
 #==========flask as backend=============
 from flask import Flask, render_template, request, jsonify, url_for
 app = Flask(__name__)
+
+# whisper 相關參數
+model = whisper.load_model("base")
 
 
 #======== fast test method by sending text input=============
@@ -79,7 +83,33 @@ def index():
             #returnlist[2] = feature
             #if(returnlist[4] == 1): returnlist[3] = ''
 
-    return render_template("index.html",returnlist=returnlist, response = response) # response message add here
+    device_info = dict()
+    with open("../DB/VoiceTalkTable.csv", newline = "") as csvfile:
+        # rows = csv.reader(csvfile)
+        rows = csv.DictReader(csvfile)
+        for row in rows:
+            if row["Rule"] == "1":
+                info = {
+                    "action" : [*ast.literal_eval(row["A"]).keys()],
+                    "value" : row["V"],
+                    "rule" : row["Rule"],
+                }
+
+            elif row["Rule"] == "2":
+                info = {
+                    "action" : row["A"],
+                    "value" : [*ast.literal_eval(row["V"]).keys()],
+                    "rule" : row["Rule"],
+                }
+
+            print(info)
+
+            if row["D"] in device_info.keys():
+                device_info[row["D"]].append(info)
+            else:
+                device_info[row["D"]] = [info]
+
+    return render_template("index.html",returnlist=returnlist, response = response, device_info = device_info) # response message add here
 
 
 @app.route('/ProcessSentence', methods = ['POST','GET'])
@@ -120,6 +150,34 @@ def ProcessSentence():
     
     return jsonify({ 'tokenlist': returnlist, 'response': response, 'valid':valid, 'name': name, 'feature': feature, 'value':value})
 
+@app.route('/save', methods = ['POST','GET'])
+def save():
+    # print("request 為", request.values)
+    # file = request.files['file']
+    uploads_dir = os.path.join(app.instance_path, 'audios')
+    os.makedirs(uploads_dir, exist_ok=True)
+    max_index = 0
+    for root, dirs, files in os.walk(uploads_dir):
+        # for f in files:
+        #     fullpath = os.path.join(root, f)
+
+        # list comprehension
+        if len(files) > 0:
+            max_index = max([int(i.split(".")[0]) for i in files ])
+        print(max_index+1)
+
+    files = request.files['file']
+    file_path = uploads_dir+"/"+ str(max_index + 1) + ".wav"
+    files.save(file_path)
+    
+    print("save : " + file_path)
+
+    sentence = model.transcribe(file_path)
+    print("*"*30)
+    print(sentence["text"])
+    print("*"*30)
+
+    return {"sentence":sentence["text"]}
 
 
 #sendDevicetalk should write to shared memory(command.csv)
@@ -146,8 +204,6 @@ def sendDevicetalk(device_queries):
                     df = df.append(cmd, ignore_index=True)
                     print("new df", df)
                     df.to_csv("../DB/cmd/command.csv", index=False)
-            
-            
     else:
         print("only 1 query", device_queries, len(device_queries))
         device_query = device_queries
@@ -164,11 +220,10 @@ def sendDevicetalk(device_queries):
             if(valid>0):
                 print("write file", V, 'type: ', type(V))
                 cmd = {'IDF':IDF,  'D':D, 'A':A, 'V':V}
-                df = df.append(cmd, ignore_index=True)
+                # df = df.append(cmd, ignore_index=True)
+                df = pd.concat([df, pd.DataFrame([cmd])], ignore_index=True)
                 print("new df", df)
                 df.to_csv("../DB/cmd/command.csv", index=False)
-
-        
 
 def initDB():
     # itterate through all languages
@@ -203,15 +258,13 @@ def initDB():
         VoiceTalkTable.to_csv(config.VoiceTalkTablePath)
 
     return token_duplicated
-    
 
 if __name__ == "__main__":
     #register.registerIottalk()
     #register will be close for debug
     token_duplicated = initDB()
-        
+    
     if(token_duplicated):
         print("[Error]Init VoiceTalk Table error, System Abort")
     else:
         app.run(host='0.0.0.0',debug=True, port=config.Port)
-    

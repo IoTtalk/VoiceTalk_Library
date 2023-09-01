@@ -1,0 +1,256 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <title>Voice Control</title>
+  <script src="{{ url_for('static', filename='js/jquery.js') }}" type="text/javascript"></script>
+
+
+
+</head>
+
+<body>
+  <script type="text/javascript">
+    //****************************************************************************************
+    // 宣告變數
+    //****************************************************************************************  
+    var recognitionTitle = { "en-US": "Recognition Result", "cmn-Hant-TW": "辨識結果" }
+    var recognitionBox = document.getElementById("recognitionBox"); // 辨識結果  "HTML元件"
+    var final_transcript = '';
+    var responseTitle = { "en-US": "System Response", "cmn-Hant-TW": "系統回覆" }
+    var responseBox = document.getElementById("responseBox");     //系統回覆
+    var startStopButton; // 「開始/停止」按鈕
+    var infoBox = document.getElementById("infoBox"); // 提示使用者的訊息
+    var startMessage = { "en-US": "Tap to start", "cmn-Hant-TW": "按此開始" }
+    var stopMessage = { "en-US": "Tap to stop", "cmn-Hant-TW": "按此結束" }
+    var selectLanguageList = document.getElementById("selectLanguageList"); // 語言選擇的下拉式選單
+
+
+
+    var recognizing = false; // 是否辨識中 
+
+
+    //=============== funtion selectLanguage(event) =======================
+    // This function is triggered when dropdown menu of language list is selected
+    // 1. stop the recognition and empty all the fields(recognition result,systme response)
+    // 2. change the API's language setting
+    // 3. change the language of context of GUI  
+    // input: event driven  
+    // output: recognition.lang is changed  
+    function selectLanguage(event) {
+      if (recognizing) { recognition.stop(); } //如果正在辨識, 就停止
+
+      language = selectLanguageList.options[selectLanguageList.selectedIndex].value; // 取得被選擇的語言
+
+      $("#responseBox").val(""); //清空 系統回應
+      $("#recognitionBox").val(""); //清空 HTML的辨識結果 “可視的元件”
+      final_transcript = "";   //清空 API的辨識結果 "變數"
+
+      recognition.lang = language;   //辨識API切換至當前語言
+      $("#recognitionTitle").html(recognitionTitle[language]) // 辨識欄位的標題切換至當前語言
+      $("#responseTitle").html(responseTitle[language])       // 回應欄位的標題切換至當前語言
+      infoBox.innerText = startMessage[language]              // 提示使用者的訊息切換至當前語言
+    }
+
+
+    // ===== startstopButton(event)  =================
+    // This function is triggered when button on GUI is clicked
+    // 1. get the language value from the dropdown list
+    // 2. if system is recognizing, the button means stop, so stop the recognition
+    // 3. if system is not recognizing, the button means start, so start the rocognition  
+    function startstopButton(event) {
+      infoBox = document.getElementById("infoBox"); // 取得訊息控制項 infoBox
+      recognitionBox = document.getElementById("recognitionBox"); // 取得最終的辨識訊息控制項 recognitionBox
+      startStopButton = document.getElementById("startStopButton"); // 取得「辨識/停止」這個按鈕控制項
+      selectLanguageList = document.getElementById("selectLanguageList");
+      language = selectLanguageList.options[selectLanguageList.selectedIndex].value;
+      if (recognizing) { // 如果正在辨識，則停止。
+        recognition.stop();
+      } else { // 否則就開始辨識
+        $("#recognitionBox").val(""); //清除最終的辨識訊息
+        $("#responseBox").val("");    //清除系統回覆
+        final_transcript = ''; // 最終的辨識訊息變數
+        recognition.lang = language //設定當前語言
+        recognition.start(); // 開始辨識
+
+      }
+    }
+
+    if (!('webkitSpeechRecognition' in window)) {  // 如果找不到 window.webkitSpeechRecognition 這個屬性
+      // 就是不支援語音辨識，要求使用者更新瀏覽器。 
+      infoBox.innerText = "本瀏覽器不支援語音辨識，請更換瀏覽器！(Chrome 25 版以上才支援語音辨識)";
+    } else {
+      var recognition = new webkitSpeechRecognition(); // 建立語音辨識物件 webkitSpeechRecognition
+      recognition.continuous = true;                   // 設定連續辨識模式
+
+
+      recognition.onstart = function () { // 開始辨識
+        recognizing = true; // 設定為辨識中
+        infoBox.innerText = stopMessage[language] // 提示使用者點選按鈕停止
+        startStopButton.src = "{{ url_for('static', filename='images/start.gif') }}";
+      };
+
+      recognition.onend = function () { // 辨識完成
+        recognizing = false; // 設定為「非辨識中」
+        infoBox.innerText = startMessage[language]  // 提示使用者點選按鈕開始
+        startStopButton.src = "{{ url_for('static', filename='images/stop.jpg') }}";
+      };
+
+      recognition.onresult = function (event) { // 辨識有任何結果時
+        for (var i = event.resultIndex; i < event.results.length; ++i) { // 對於每一個辨識結果
+          if (event.results[i].isFinal) { // 如果是最終結果
+            final_transcript = event.results[i][0].transcript; // 將其加入最終結果中
+            console.log("i:" + i + event.results[i][0].transcript);
+          }
+        }
+        if (final_transcript.trim().length > 0) { // 如果有最終辨識文字
+          recognitionBox.value = final_transcript; // 顯示最終辨識文字到HTML
+
+          // portocol: send input to backend and get the input
+
+          $.getJSON({
+            url: "/ProcessSentence",
+            data: { language: language, sentence: final_transcript },
+            success: function (data) {
+              if (language == "en-US") {
+                console.log("data recieve", data)
+                console.log("valid bit frontend", data.valid)
+                if (data.valid < 0) {
+                  renderhtml = data.response
+                  switch (data.valid) {
+                    case -1: renderhtml = "The number of device/device feature should be one, not multiple."; break;
+                    case -2: renderhtml = "No device found in the sentence."; break;
+                    case -3: renderhtml = "No device feature found in the sentence"; break;
+                    case -4: renderhtml = "Device " + data.name + " does not support " + data.feature; break;
+                    case -5: renderhtml = "The value" + data.value + " in sentence cause error"; break;
+                  }
+                }
+                else {
+                  if (data.valid == 1) {
+                    renderhtml = data.response + data.name + " is set to " + data.feature
+                  }
+                  else {
+                    renderhtml = data.response + data.name + "'s " + data.feature + " is set to " + data.value
+                  }
+
+                }
+              }
+              else if (language == "cmn-Hant-TW") {
+                console.log("data recieve", data)
+                console.log("valid bit frontend", data.valid)
+                if (data.valid < 0) {
+                  renderhtml = data.response + data.valid
+                  switch (data.valid) {
+                    case -1: renderhtml = "句子中的電器/電器功能的數量僅能為一個"; break;
+                    case -2: renderhtml = "句子中未包含電器"; break;
+                    case -3: renderhtml = "句子中未包含電器功能"; break;
+                    case -4: renderhtml = data.name + " 不支援 " + data.feature; break;
+                    case -5: renderhtml = "句子中的數值" + data.value + "有誤"; break;
+                    case -6: renderhtml = "句子中的數值" + data.value + "超出範圍"; break;
+
+                  }
+                }
+                else {
+                  if (data.valid == 1) {
+                    renderhtml = data.response + data.name + "即將" + data.feature
+                  }
+                  else {
+                    renderhtml = data.response + data.name + "的" + data.feature + "將設定為" + data.value
+                  }
+
+                }
+              }
+
+
+              console.log(renderhtml)
+              $("#responseBox").val(renderhtml);
+            },
+            error: function () {
+              //alert("fail")
+            }
+          });
+
+        }
+
+        //
+
+
+      };
+    }
+
+
+
+  </script>
+
+  <div class="container text-center">
+    <div class="form-group">
+      <br>
+      <h1 class="h3 mb-3 font-weight-normal">VoiceTalk</h1>
+      <div class="col-sm">
+        <label id="recognitionTitle" for="recognitionBox">辨識結果:</label>
+
+        <input id="recognitionBox" class="form-control" type="text" size="60" value="" />
+        <br>
+        <br>
+        <form method="post">
+          <input type="text" name="user">
+          <input type="submit" name="send" value="文字送出">
+        </form>
+      </div>
+      <div class="col-sm">
+        <label id="responseTitle" for="recognitionBox">系統回覆:</label>
+
+        <div id="resultarea">
+          <input id="responseBox" class="form-control" size="60" readonly />
+          <span id="response"></span>
+
+        </div>
+      </div>
+      <br>
+      <br>
+      <!--br>
+        <br>
+        <br>
+        <br-->
+      <div class="col-sm">
+
+        <img id="startStopButton" style="width:110px; height:110px;" onclick="startstopButton(event)"
+          src="{{ url_for('static', filename='images/start.gif') }}" />
+
+        <br>
+        <p id="infoBox">按此開始</p>
+
+
+      </div>
+      <form method="post">
+        <select id="selectLanguageList" name="lang" onchange="selectLanguage(event)">
+          <option value="cmn-Hant-TW">中文</option>
+          <option value="en-US">English</option>
+        </select>
+      </form>
+
+
+
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+    window.onload = startstopButton(event);
+    window.onload = selectLanguage(event);
+  </script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
