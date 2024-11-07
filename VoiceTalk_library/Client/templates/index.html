@@ -131,11 +131,10 @@
 
 <!-- 在模板中填入 body 內容 -->
 {% block body %}
-
 <div class="container text-center my-1">
     <div class="row my-title-row">
         <div class="col">
-            <!-- <h1 class="h3 fw-normal py-3 mb-0">VoiceTalk</h1> -->
+            <h1 class="h3 fw-normal py-3 mb-0">VoiceTalk</h1>
         </div>
     </div>
     <div class="row my-response-row">
@@ -174,29 +173,24 @@
                         aria-labelledby="heading_{{loop.index}}" data-bs-parent="#accordionExample">
 
                         <div class="accordion-body">
-                            {% set rule1_A = [] %}
+                            {% set rule1 = [] %}
                             {% set rule2 = [] %}
-                            {% set rule2_V = [] %}
 
                             {% for info in device_info[device] %}
                             {% if info["rule"] == "1" %}
-                            {% for A in info["action"] %}
-                            <!-- rule1_A.push(A) -->
-                            {% set _ = rule1_A.append(A) %}
-                            {% endfor %}
-
+                            {% set _ = rule1.append(info) %}
                             {% elif info["rule"] == "2" %}
                             {% set _ = rule2.append(info) %}
                             {% endif %}
-                            <!-- <p>{{info["action"]}}</p> -->
                             {% endfor %}
 
-                            {% if rule1_A != [] %}
-                            <p>Rule 1 : <span style="color:red;">{{rule1_A[0]}}</span> {{device}}</p>
-                            <p>紅字可改成 : <span style="color:red;">{% for A in rule1_A %}{{A}}, {% endfor %}</span></p>
+                            {% if rule1 != [] %}
+                            <p>Rule 1 : <span style="color:red;">{{rule1[0]["value"][0]}}</span> the {{device}}</p>
+                            <p>紅字可改成 : <span style="color:red;">{% for V in rule1[0]["value"] %}{{V}}, {% endfor
+                                    %}</span></p>
                             {% endif %}
                             {% if rule2 != [] %}
-                            <p>Rule 2 : Set the {{device}} <span style="color:red;">{{rule2[0]["action"]}}</span>
+                            <p>Rule 2 : Set the <span style="color:red;">{{rule2[0]["action"]}}</span> of the {{device}}
                                 to <span style="color:blue;">{{rule2[0]["value"][0]}}</span>
                             </p>
                             <table class="table table-striped table-bordered table-sm">
@@ -234,13 +228,14 @@
                 </div>
                 <div class="modal-body">
                     <form method="post">
-                        <input type="text" name="user" id="user_typing">
-                        <input type="submit" name="send" value="文字送出">
+                        <input type="text" name="corrected_sentence" id="user_typing">
+                        <!-- <input type="submit" name="send" value="文字送出"> -->
+                        <button type="submit" id="submitBtn">Submit</button>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                 </div>
             </div>
         </div>
@@ -257,6 +252,8 @@
                 <select id="selectASRtoolList" name="lang" onchange="changeASRtool(event)">
                     <option value="Web Speech API">Web Speech API</option>
                     <option value="Whisper">Whisper</option>
+                    <option value="Dialogflow">Google Dialogflow</option>
+                    <option value="STT">Google Speech-to-Text</option>
                 </select>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -315,9 +312,6 @@
         checkWebSpeechAPI();
         startstopButton();
         changeLanguage();
-        // 透過mediaDevices.getUserMedia，會提示使用者是否給予存取多媒體數據的許可，同意後會產生MediaStream物件，裡面包含了請求的存取的多媒體數據。
-        // 當取得使用者的設備後，進入 handleSuccess 函數
-        // const microphone = navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(handleSuccess);
     });
     //****************************************************************************************
     // 宣告變數
@@ -339,11 +333,114 @@
     var selectASRtoolList = document.getElementById("selectASRtoolList"); // 語言選擇的下拉式選單
     var recognition;
     var microphone;
+    var after_recognition_flag = false
     // var mediaRecorder;
 
     // testing execution time
     var start_time = 0
     var recognition_end_time = 0
+
+    // 定義麥克風相關的函數
+    let stream = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    // 定義錄音相關功能
+    // 在 async 中可以用 try...catch 來捕捉錯誤
+    async function initRecorder() {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+            console.warn("MediaRecorder is already initialized and not inactive.");
+            return;
+        }
+        // 清理之前的 recorder 和 stream
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        mediaRecorder = null;
+        try {
+            // 取得麥克風的存取權，取得後網頁就會顯示正在錄音的狀態
+            stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            // 建立 MediaRecorder
+            const options = { mimeType: 'audio/webm' };
+            mediaRecorder = new MediaRecorder(stream, options);
+
+            // 開始錄音時要做什麼
+            mediaRecorder.onstart = function () {
+                recordedChunks = []; // 清空已錄製的音訊片段
+                recognizing = true;
+                infoBox.innerText = stopMessage[language] // 提示使用者點選按鈕停止
+                startStopButton.src = "{{ url_for('static', filename='images/start.gif') }}";
+                console.log("Recording started.");
+            }
+
+            // 當有音訊數據就加到 recordedChunks 中
+            mediaRecorder.ondataavailable = function (event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+            console.log("MediaRecorder initialized.");
+        } catch (err) {
+            if (err.name === 'NotAllowedError') {
+                console.error("Microphone access denied. Please allow microphone access in your browser settings.");
+            } else {
+                console.error("Error initializing MediaRecorder:", err);
+            }
+        }
+    }
+    // 開始錄音
+    async function startRecording() {
+        $("#recognitionBox").val(""); //清除最終的辨識訊息
+        $("#responseBox").val("");    //清除系統回覆
+        if (!mediaRecorder || mediaRecorder.state !== "inactive") {
+            // 檢查 recorder 是否已初始化，若未初始化，則初始化
+            // 雖然 initRecorder() 不是 Promise 寫法，但因為是宣告成 async 所以會自動把 return 包在 Promise 中回傳，所以可以用 await
+            await initRecorder();
+        }
+        mediaRecorder.start();
+    }
+    // 停止錄音
+    function stopRecording() {
+        return new Promise(resolve => {
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                mediaRecorder.onstop = () => {
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                        stream = null;
+                    }
+                    resolve(); // 在 onstop 事件中完成 Promise
+                };
+                mediaRecorder.stop();
+                mediaRecorder = null;
+                recognizing = false;
+                infoBox.innerText = startMessage[language]  // 提示使用者點選按鈕開始
+                startStopButton.src = "{{ url_for('static', filename='images/stop.jpg') }}";
+                console.log("Recording stopped.");
+            } else {
+                resolve();
+            }
+        });
+    }
+
+    // 將資料(變數:data) 傳到後端的 route(變數:url)。
+    // 使用 Promise 來處理非同步的操作，只需要搭配 .then() 跟 .catch() 就能接續處理，防止在還沒取得後端回覆前就執行後面的程式碼
+    function process_sentence(url, data) {
+        return new Promise((resolve, reject) => {
+            $.getJSON({
+                url: url,
+                data: data,
+                success: function (data) {
+                    // 產生並顯示系統回覆
+                    handlingSystemReplies(data)
+                    // 將回傳到 'then'
+                    resolve(data);
+                },
+                error: function () {
+                    reject("Failed to get data from server"); // 如果失敗，調用 reject
+                }
+            });
+        });
+    }
 
     //=============== funtion changeLanguage(event) =======================
     // This function is triggered when clicking the change Language button
@@ -396,7 +493,7 @@
     // 1. get the language value from the dropdown list
     // 2. if system is recognizing, the button means stop, so stop the recognition
     // 3. if system is not recognizing, the button means start, so start the rocognition  
-    function startstopButton(event) {
+    async function startstopButton(event) {
         infoBox = document.getElementById("infoBox"); // 取得訊息控制項 infoBox
         recognitionBox = document.getElementById("recognitionBox"); // 取得最終的辨識訊息控制項 recognitionBox
         startStopButton = document.getElementById("startStopButton"); // 取得「辨識/停止」這個按鈕控制項
@@ -407,11 +504,11 @@
             console.log("now is Web Speech API")
             if (recognizing) { // 如果正在辨識，則停止。
                 recognition.stop();
-
-                // testing execution time
-                start_time = new Date().getTime();
-                console.log(start_time / 1000 + "sec");
-
+                // // 若有需要使用後端回傳的資料，再把 process_sentence 後面的 .then 跟 .catch 打開來用
+                // process_sentence(
+                //     url = "/ProcessSentence", 
+                //     data = { language: language, sentence: final_transcript }
+                // )
             } else { // 否則就開始辨識
                 $("#recognitionBox").val(""); //清除最終的辨識訊息
                 $("#responseBox").val("");    //清除系統回覆
@@ -420,151 +517,73 @@
                 recognition.start(); // 開始辨識
             }
         }
-        else if (using_tool == "Whisper") {
+        else {
+            // 只有 web speech api 是自己處理出 ASR，其他三個工具(Whisper, DialogFlow, STT) 都是錄音檔傳到後端處理。
             if (recognizing) { // 如果正在辨識，則停止。
-                window.mediaRecorder.stop();
-                if (window.stream) {
-                    window.stream.getTracks().forEach(track => {
-                        track.stop();
-                    });
-                }
-
-                // testing execution time
-                start_time = new Date().getTime();
-                console.log(start_time / 1000 + "sec");
+                await stopRecording();
+                sendToBackend()
             }
             else {
-                // 透過mediaDevices.getUserMedia，會提示使用者是否給予存取多媒體數據的許可，同意後會產生MediaStream物件，裡面包含了請求的存取的多媒體數據。
-                // 當取得使用者的設備後，進入 handleSuccess 函數
-                microphone = navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(handleSuccess);
-                setTimeout(function () {
-                    window.mediaRecorder.start();
-                }, 1000);
+                startRecording()
             }
         }
-
-
     }
 
-    function initMicrophoneAndMediaRecorder() {
-        // const microphone = navigator.mediaDevices;
-        // const microphone = navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        const microphone = navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(handleSuccess);
-        console.log(microphone)
-    }
-
-    function handleSuccess(stream) {
-        const options = { mimeType: 'audio/webm' };
-        var mediaRecorder = new MediaRecorder(stream, options);
-
-        window.stream = stream;
-        window.mediaRecorder = mediaRecorder;
-
-        var recordedChunks = [];
-
-        mediaRecorder.addEventListener('dataavailable', function (e) {
-            if (e.data.size > 0) recordedChunks.push(e.data);
-        });
-
-        mediaRecorder.addEventListener('stop', function () {
-            console.log("mediaRecorder 結束");
-            sendToBackend();
-            recognizing = false;
-            infoBox.innerText = startMessage[language]  // 提示使用者點選按鈕開始
-            startStopButton.src = "{{ url_for('static', filename='images/stop.jpg') }}";
-        });
-
-        mediaRecorder.addEventListener('start', function () {
-            recordedChunks = [];
-            recognizing = true;
-            infoBox.innerText = stopMessage[language] // 提示使用者點選按鈕停止
-            startStopButton.src = "{{ url_for('static', filename='images/start.gif') }}";
-            console.log("mediaRecorder 開始");
-        });
-
-        function sendToBackend() {
-            let formData = new FormData();
-            formData.append("file", new Blob(recordedChunks), "audio.wav");
-
-            let request = new XMLHttpRequest();
-            request.open("POST", "/save");
-            request.onreadystatechange = () => {
-                if (request.readyState == 4) {
-                    var res = JSON.parse(request.responseText);
-                    // console.log("res", res.sentence);
-                    recognitionBox.value = res.sentence;
-                    $.getJSON({
-                        url: "/ProcessSentence",
-                        data: { language: language, sentence: res.sentence },
-                        success: function (data) {
-                            if (language == "en-US") {
-                                // console.log("data recieve", data)
-                                // console.log("valid bit frontend", data.valid)
-                                if (data.valid < 0) {
-                                    renderhtml = data.response
-                                    switch (data.valid) {
-                                        case -1: renderhtml = "The number of device/device feature should be one, not multiple."; break;
-                                        case -2: renderhtml = "No device found in the sentence."; break;
-                                        case -3: renderhtml = "No device feature found in the sentence"; break;
-                                        case -4: renderhtml = "Device " + data.name + " does not support " + data.feature; break;
-                                        case -5: renderhtml = "The value" + data.value + " in sentence cause error"; break;
-                                    }
-                                }
-                                else {
-                                    if (data.valid == 1) {
-                                        renderhtml = data.response + data.name + " is set to " + data.feature
-                                    }
-                                    else {
-                                        renderhtml = data.response + data.name + "'s " + data.feature + " is set to " + data.value
-                                    }
-
-                                }
-                            }
-                            else if (language == "cmn-Hant-TW") {
-                                console.log("data recieve", data)
-                                console.log("valid bit frontend", data.valid)
-                                if (data.valid < 0) {
-                                    renderhtml = data.response + data.valid
-                                    switch (data.valid) {
-                                        case -1: renderhtml = "句子中的電器/電器功能的數量僅能為一個"; break;
-                                        case -2: renderhtml = "句子中未包含電器"; break;
-                                        case -3: renderhtml = "句子中未包含電器功能"; break;
-                                        case -4: renderhtml = data.name + " 不支援 " + data.feature; break;
-                                        case -5: renderhtml = "句子中的數值" + data.value + "有誤"; break;
-                                        case -6: renderhtml = "句子中的數值" + data.value + "超出範圍"; break;
-
-                                    }
-                                }
-                                else {
-                                    if (data.valid == 1) {
-                                        renderhtml = data.response + data.name + "即將" + data.feature
-                                    }
-                                    else {
-                                        renderhtml = data.response + data.name + "的" + data.feature + "將設定為" + data.value
-                                    }
-
-                                }
-                            }
-                            console.log(renderhtml)
-                            $("#responseBox").val(renderhtml);
-
-                            $("#user_typing").val(res.sentence);
-
-                            // testing execution time
-                            recognition_end_time = new Date().getTime();
-                            console.log("recognition time (Whisper) : " + (recognition_end_time - start_time) / 1000 + "sec");
-                        },
-                        error: function () {
-                            //alert("fail")
-                        }
-                    });
+    // 定義產生並顯示系統回復的 function
+    function handlingSystemReplies(data) {
+        if (language == "en-US") {
+            console.log("data recieve", data)
+            console.log("valid bit frontend", data.valid)
+            if (data.valid < 0) {
+                renderhtml = data.response
+                switch (data.valid) {
+                    case -1: renderhtml = "The number of device/device feature should be one, not multiple."; break;
+                    case -2: renderhtml = "No device found in the sentence."; break;
+                    case -3: renderhtml = "No device feature found in the sentence"; break;
+                    case -4: renderhtml = "Device " + data.name + " does not support " + data.feature; break;
+                    case -5: renderhtml = "The value" + data.value + " in sentence cause error"; break;
                 }
             }
-            request.send(formData);
-            console.log("傳送成功");
-        };
-    };
+            else {
+                if (data.valid == 1) {
+                    // renderhtml = data.response + data.name + " is set to " + data.feature
+                    renderhtml = data.response + data.name + " is set to " + data.value
+                }
+                else {
+                    renderhtml = data.response + data.name + "'s " + data.feature + " is set to " + data.value
+                }
+            }
+        }
+        else if (language == "cmn-Hant-TW") {
+            console.log("data recieve", data)
+            console.log("valid bit frontend", data.valid)
+            if (data.valid < 0) {
+                renderhtml = data.response + data.valid
+                switch (data.valid) {
+                    case -1: renderhtml = "句子中的電器/電器功能的數量僅能為一個"; break;
+                    case -2: renderhtml = "句子中未包含電器"; break;
+                    case -3: renderhtml = "句子中未包含電器功能"; break;
+                    case -4: renderhtml = data.name + " 不支援 " + data.feature; break;
+                    case -5: renderhtml = "句子中的數值" + data.value + "有誤"; break;
+                    case -6: renderhtml = "句子中的數值" + data.value + "超出範圍"; break;
 
+                }
+            }
+            else {
+                if (data.valid == 1) {
+                    // renderhtml = data.response + data.name + "即將" + data.feature
+                    renderhtml = data.response + data.name + "即將" + data.value
+                }
+                else {
+                    renderhtml = data.response + data.name + "的" + data.feature + "將設定為" + data.value
+                }
+            }
+        }
+        console.log("renderhtml =", renderhtml)
+        $("#responseBox").val(renderhtml);
+    }
+
+    // 定義 web speech api 的 function
     function checkWebSpeechAPI() {
         console.log("checking")
         // for web speech API
@@ -602,81 +621,118 @@
                 if (final_transcript.trim().length > 0) { // 如果有最終辨識文字
                     recognitionBox.value = final_transcript; // 顯示最終辨識文字到HTML
 
+                    // 將辨識結果放到手動輸入欄位，讓使用者修改，再將 after_recognition_flag 設為 true
+                    $("#user_typing").val(final_transcript);
+                    after_recognition_flag = true
+
+                    // 若有需要使用後端回傳的資料，再把 process_sentence 後面的 .then 跟 .catch 打開來用
+                    process_sentence(
+                        url = "/ProcessSentence",
+                        data = { language: language, sentence: final_transcript }
+                    )
+                    // .then((data) => {
+                    //     // process_sentence 成功會進到這裡， data 為後端回傳的資料
+                    //     console.log("Received data: ", data);
+                    // })
+                    // .catch((error) => {
+                    //     // process_sentence 失敗會進到這裡
+                    //     console.error("Error: ", error);
+                    // });
                     // portocol: send input to backend and get the input
+                    // $.getJSON({
+                    //     url: "/ProcessSentence",
+                    //     data: { language: language, sentence: final_transcript },
+                    //     success: function (data) {
+                    //         // 產生並顯示系統回復
+                    //         handlingSystemReplies(data)
 
-                    $.getJSON({
-                        url: "/ProcessSentence",
-                        data: { language: language, sentence: final_transcript },
-                        success: function (data) {
-                            if (language == "en-US") {
-                                console.log("data recieve", data)
-                                console.log("valid bit frontend", data.valid)
-                                if (data.valid < 0) {
-                                    renderhtml = data.response
-                                    switch (data.valid) {
-                                        case -1: renderhtml = "The number of device/device feature should be one, not multiple."; break;
-                                        case -2: renderhtml = "No device found in the sentence."; break;
-                                        case -3: renderhtml = "No device feature found in the sentence"; break;
-                                        case -4: renderhtml = "Device " + data.name + " does not support " + data.feature; break;
-                                        case -5: renderhtml = "The value" + data.value + " in sentence cause error"; break;
-                                    }
-                                }
-                                else {
-                                    if (data.valid == 1) {
-                                        renderhtml = data.response + data.name + " is set to " + data.feature
-                                    }
-                                    else {
-                                        renderhtml = data.response + data.name + "'s " + data.feature + " is set to " + data.value
-                                    }
 
-                                }
-                            }
-                            else if (language == "cmn-Hant-TW") {
-                                console.log("data recieve", data)
-                                console.log("valid bit frontend", data.valid)
-                                if (data.valid < 0) {
-                                    renderhtml = data.response + data.valid
-                                    switch (data.valid) {
-                                        case -1: renderhtml = "句子中的電器/電器功能的數量僅能為一個"; break;
-                                        case -2: renderhtml = "句子中未包含電器"; break;
-                                        case -3: renderhtml = "句子中未包含電器功能"; break;
-                                        case -4: renderhtml = data.name + " 不支援 " + data.feature; break;
-                                        case -5: renderhtml = "句子中的數值" + data.value + "有誤"; break;
-                                        case -6: renderhtml = "句子中的數值" + data.value + "超出範圍"; break;
-
-                                    }
-                                }
-                                else {
-                                    if (data.valid == 1) {
-                                        renderhtml = data.response + data.name + "即將" + data.feature
-                                    }
-                                    else {
-                                        renderhtml = data.response + data.name + "的" + data.feature + "將設定為" + data.value
-                                    }
-
-                                }
-                            }
-                            console.log("renderhtml =", renderhtml)
-                            $("#responseBox").val(renderhtml);
-
-                            // console.log("final_transcript =", final_transcript)
-                            $("#user_typing").val(final_transcript);
-
-                            // testing execution time
-                            recognition_end_time = new Date().getTime();
-                            console.log("recognition time (Web Speech API) : " + (recognition_end_time - start_time) / 1000 + "sec");
-                        },
-                        error: function () {
-                            //alert("fail")
-                        }
-                    });
+                    //         // testing execution time
+                    //         recognition_end_time = new Date().getTime();
+                    //         console.log("recognition time (Web Speech API) : " + (recognition_end_time - start_time) / 1000 + "sec");
+                    //     },
+                    //     error: function () {
+                    //         //alert("fail")
+                    //     }
+                    // });
                 }
             };
         }
     }
 
-</script>
+    function sendToBackend() {
+        let formData = new FormData();
+        formData.append("using_tool", using_tool);
+        // console.log("recordedChunks:", recordedChunks)
+        formData.append("file", new Blob(recordedChunks), "audio.wav");
 
+        let request = new XMLHttpRequest();
+        // 先將音檔傳到後端("/save")跑 ASR，再將 ASR 結果傳到後端("/ProcessSentence")跑指令處理
+        request.open("POST", "/save");
+        request.onreadystatechange = () => {
+            if (request.readyState == 4) {
+                var res = JSON.parse(request.responseText);
+                if (res.sentence != "") {
+                    recognitionBox.value = res.sentence;
+                    // 將辨識結果放到手動輸入欄位，讓使用者修改，再將 after_recognition_flag 設為 true
+                    $("#user_typing").val(res.sentence);
+                    after_recognition_flag = true
+
+                    // 若有需要使用後端回傳的資料，再把 process_sentence 後面的 .then 跟 .catch 打開來用
+                    process_sentence(
+                        url = "/ProcessSentence",
+                        data = { language: language, sentence: res.sentence }
+                    )
+                    // .then((data) => {
+                    //     // process_sentence 成功會進到這裡， data 為後端回傳的資料
+                    //     console.log("Received data: ", data);
+                    // })
+                    // .catch((error) => {
+                    //     // process_sentence 失敗會進到這裡
+                    //     console.error("Error: ", error);
+                    // });
+                }
+            }
+        }
+        request.send(formData);
+        console.log("傳送成功");
+    };
+
+    // 按下手動輸入的 Submit 按鈕
+    $(document).ready(function () {
+        $('form').submit(function (event) {
+            var submitBtn = document.getElementById('submitBtn');
+            event.preventDefault();
+            corrected_sentence = $("#user_typing").val(),
+                $("#user_typing").val("");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Waiting..."
+            $.getJSON({
+                type: 'POST',
+                url: '/ManualTyping',
+                data: {
+                    language: language,
+                    corrected_sentence: corrected_sentence,
+                    wrong_sentence: $("#recognitionBox").val(),
+                    after_recognition_flag: after_recognition_flag
+                },
+                // $('form').serialize() + "&wrong_sentence=" + $("#recognitionBox").val() + "&after_recognition_flag=" + after_recognition_flag,
+                success: function (data) {
+                    // 產生並顯示系統回復
+                    handlingSystemReplies(data)
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Submit"
+                    // 將使用者手動輸入內容放到 Recognition Result，並清空手動輸入欄位，再將 after_recognition_flag 設為 false
+                    recognitionBox.value = corrected_sentence;
+                    after_recognition_flag = false
+                },
+                error: function () {
+                    alert("fail")
+                }
+            });
+        });
+    });
+</script>
 <!-- <script type="text/javascript">
     window.onload = startstopButton(event);
     window.onload = changeLanguage(event);

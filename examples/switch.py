@@ -5,8 +5,8 @@
 # self.A = {'turn on':1, 'turn off':0}
 # self.V = None
 self.D = 'device'
-self.A = {'turn on':1, 'turn off':0}
-self.V = None
+self.A = 'switch'
+self.V = {'turn on':1, 'turn off':0}
 # ***[init_content]***
 voicetalk.update_table(type(self).__name__ ,self.D, self.A, self.V, Language)
 # ***[runs_content]***

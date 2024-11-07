@@ -28,7 +28,8 @@ class VoiceTalk:
         result_df = df.loc[(df['IDF'] == name)]
         if(len(result_df.index) == 0):
             print("update new table", name)
-            df = df.append({'IDF':name , 'D': D, 'A': A, 'V': V}, ignore_index=True)
+            # df = df.append({'IDF':name , 'D': D, 'A': A, 'V': V}, ignore_index=True)
+            df = pd.concat([df, pd.DataFrame([{'IDF':name , 'D': D, 'A': A, 'V': V}])], ignore_index=True)
             df.to_csv(language_path, index=False)
 
 
@@ -42,7 +43,10 @@ class VoiceTalk:
         print("i is:", i, type(i))
         select_df = df.loc[(df['IDF'] == name)]
         raw_data = select_df['V'].iloc[0]
-        self.data = ast.literal_eval(raw_data)
+        # 把 raw_data 轉成 str 有兩個原因
+        # 1. ast.literal_eval() 會把字串處理成對應的資料型態，若輸入不是字串會噴錯。
+        # 2. pandas 讀取出的部分資料型態(int64)與 python3 不相容，後續要 push 到 iottalk 時會噴錯，所以直接強制轉成 str 再用 ast.literal_eval() 轉換。
+        self.data = ast.literal_eval(str(raw_data))
         # print("select df", select_df, type(select_df))
         # print("self data: ", self.data, "!", type(self.data))
         df = df.drop(i)
