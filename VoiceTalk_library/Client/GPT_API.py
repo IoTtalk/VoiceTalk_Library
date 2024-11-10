@@ -6,7 +6,7 @@ import pandas as pd
 from openai import OpenAI
 import config
 
-os.environ['OPENAI_API_KEY'] = "***REMOVED***"
+os.environ['OPENAI_API_KEY'] = ""
 
 with open(config.TokenListPath, "r") as text_file:
     token_list = text_file.read()
