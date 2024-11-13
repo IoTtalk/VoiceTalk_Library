@@ -282,19 +282,24 @@ def need_to_add_dict(text1, text2):
     
     added_list = []
     for t in ans_list:
-        # 嘗試把代號轉回英文
-        wrong = trans_token_dict.get(t[0], t[0])
-        right = trans_token_dict.get(t[1], t[1])
+        wrong = t[0]
+        right = t[1]
         # Step 5 : 加入字典
-        # 需符合2點：
-        # 檢查 1. 修正前的字串不是 VoiceTalk 的 token，則可以直接加入字典。
+        # 檢查 1. 修正前的字串不是 VoiceTalk 的 token，避免錯誤替換其他情境中的token。
         # 檢查 2. 修正後的字串是 VoiceTalk 的 token，則要檢查修正前的字串是否為 Device 的 substring，若不是的話再加入字典。
-        add_flag = False
-        if wrong not in (list(trans_token_dict.values())+[str(i) for i in range(11)]):
-            if re.search(r"\b" + wrong + r"\b", right) == None:
-                add_flag = True
+        add_flag = True
+        for token in trans_token_dict.keys():
+            if token in right.split(" "):
+                if (len(wrong.split(" "))==1) and (any(item in trans_token_dict[token] for item in wrong.split(" "))):
+                    add_flag = False
+            elif (len(wrong.split(" ")) == 1) and ((token in wrong.split(" ")) or all(i.isdigit() for i in wrong.split(" "))):
+                add_flag = False
 
         if add_flag:
+            # 嘗試把代號轉回英文
+            wrong = trans_token_dict.get(t[0], t[0])
+            right = trans_token_dict.get(t[1], t[1])
+            
             for key, value in trans_token_dict.items(): 
                 wrong = re.sub(r'[.,]', '', wrong.replace(key, value)).strip()
                 right = re.sub(r'[.,]', '', right.replace(key, value)).strip()
