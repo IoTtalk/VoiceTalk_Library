@@ -1,0 +1,6 @@
+DM,Trait
+LIGHT,"['ColorSetting', 'Brightness', 'OnOff']"
+FAN,"['FanSpeed', 'OnOff']"
+CURTAIN,['OpenClose']
+DOOR,"['LockUnlock', 'OpenClose']"
+WINDOW,"['LockUnlock', 'OpenClose']"

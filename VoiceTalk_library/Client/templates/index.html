@@ -7,7 +7,7 @@
 </title>
 
 <style>
-       /* 整個網頁占滿一個畫面的高度 */
+    /* 整個網頁占滿一個畫面的高度 */
     .container {
         height: 100vh;
         width: 100%;
@@ -32,111 +32,148 @@
         justify-content: space-around;
         align-items: center;
         padding: 20px 0;
-/*         background-color:#000000 */
-        
+        /*         background-color:#000000 */
+
     }
-    
-/*     .footer fixed-bottom{
+
+    /*     .footer fixed-bottom{
         max-width: 900px;
         width: 100%;
         display: flex;
         justify-content: space-around;
         text-align: center;
     } */
-    
+
     #footer-1st-row {
-        max-width: 900px; /* 限制最大寬度 */
-        width: 100%; /* 使用100%寬度，讓容器自適應 */
+        max-width: 900px;
+        /* 限制最大寬度 */
+        width: 100%;
+        /* 使用100%寬度，讓容器自適應 */
         display: flex;
-        justify-content: space-around; /* 均勻分佈內容 */
-        align-items: center; /* 垂直居中內容 */
+        justify-content: space-around;
+        /* 均勻分佈內容 */
+        align-items: center;
+        /* 垂直居中內容 */
         text-align: center;
-/*         background-color: #000000;  */
-        margin: 0 auto; /* 讓容器水平居中 */
-        padding: 10px 0; /* 可調整上下內邊距 */
-        margin-bottom:15px;
+        /*         background-color: #000000;  */
+        margin: 0 auto;
+        /* 讓容器水平居中 */
+        padding: 10px 0;
+        /* 可調整上下內邊距 */
+        margin-bottom: 15px;
     }
-    
+
     .footer .row {
         display: flex;
-        justify-content: space-around; /* 確保列內的項目均勻分佈 */
+        justify-content: space-around;
+        /* 確保列內的項目均勻分佈 */
         align-items: center;
     }
 
     .footer .col-4 {
         display: flex;
-        flex-direction: column;  /* 確保圖片和文字是垂直排列的 */
+        flex-direction: column;
+        /* 確保圖片和文字是垂直排列的 */
         justify-content: center;
         text-align: center;
     }
-    
+
     .wrapper {
         max-width: 900px;
         width: 100%;
         justify-content: center;
         text-align: center;
-/*         background-color:#000000; */
-        
+        /*         background-color:#000000; */
+
     }
 
     .image-wrapper {
-        width: 80px; /* 固定容器寬度 */
-        height: 80px; /* 固定容器高度 */
+        width: 80px;
+        /* 固定容器寬度 */
+        height: 80px;
+        /* 固定容器高度 */
         display: flex;
         justify-content: center;
         align-items: center;
-        overflow: hidden; /* 隱藏多餘部分（如圖片過大） */
+        overflow: hidden;
+        /* 隱藏多餘部分（如圖片過大） */
     }
-    
+
     .gear {
-        width: 80px; /* 固定容器寬度 */
-        height: 80px; /* 固定容器高度 */
+        width: 80px;
+        /* 固定容器寬度 */
+        height: 80px;
+        /* 固定容器高度 */
         display: flex;
-        justify-content: center; /* 水平居中 */
-        align-items: center; /* 垂直居中 */
-        overflow: hidden; /* 避免圖片超出容器範圍 */
+        justify-content: center;
+        /* 水平居中 */
+        align-items: center;
+        /* 垂直居中 */
+        overflow: hidden;
+        /* 避免圖片超出容器範圍 */
     }
+
     /* Settings & Typings Icon */
     .icon-img {
-        width: 100%; /* 圖片寬度佔滿容器 */
-        height: 70%; /* 圖片高度佔滿容器 */
-        object-fit: contain; /* 保持圖片比例，顯示完整 */
+        width: 100%;
+        /* 圖片寬度佔滿容器 */
+        height: 70%;
+        /* 圖片高度佔滿容器 */
+        object-fit: contain;
+        /* 保持圖片比例，顯示完整 */
     }
+
     /* StartStop Icon */
-    .startstop-img{
-        width: 100%; /* 圖片寬度佔滿容器 */
-        height: 100%; /* 圖片高度佔滿容器 */
-        object-fit: contain; /* 保持圖片比例，顯示完整 */
+    .startstop-img {
+        width: 100%;
+        /* 圖片寬度佔滿容器 */
+        height: 100%;
+        /* 圖片高度佔滿容器 */
+        object-fit: contain;
+        /* 保持圖片比例，顯示完整 */
     }
+
     .ban-img {
-        position: absolute; /* 設為絕對定位，用於重疊 */
-        width: 50%; /* 圖標大小為容器寬度的 50% */
-        height: 50%; /* 圖標大小為容器高度的 50% */
-        object-fit: contain; /* 保持比例並顯示完整圖片 */
-        z-index: 2; /* 設定在底層圖標上方 */
-        pointer-events: auto; /* 防止遮擋底層的點擊事件（如果需要） */
+        position: absolute;
+        /* 設為絕對定位，用於重疊 */
+        width: 50%;
+        /* 圖標大小為容器寬度的 50% */
+        height: 50%;
+        /* 圖標大小為容器高度的 50% */
+        object-fit: contain;
+        /* 保持比例並顯示完整圖片 */
+        z-index: 2;
+        /* 設定在底層圖標上方 */
+        pointer-events: auto;
+        /* 防止遮擋底層的點擊事件（如果需要） */
     }
+
     /* 圖片與文字居中對齊 */
     .wrapper {
         display: flex;
         flex-direction: column;
-        align-items: center; /* 水平居中 */
-        justify-content: center; /* 垂直居中 */
-        text-align: center; /* 文字置中 */
+        align-items: center;
+        /* 水平居中 */
+        justify-content: center;
+        /* 垂直居中 */
+        text-align: center;
+        /* 文字置中 */
     }
 
     /* 統一間距 */
     .row {
-        padding: 10px 0; /* 上下留白 */
+        padding: 10px 0;
+        /* 上下留白 */
     }
-    
-    
+
+
     p {
-        margin-top:10px;
+        margin-top: 10px;
         font-size: 16px;
         color: #333;
     }
-/*     使用者確認框 */
+
+    /*     使用者確認框 */
     .confirm-modal {
         display: none;
         position: fixed;
@@ -152,6 +189,7 @@
         text-align: center;
         z-index: 1000;
     }
+
     .confirm-buttons {
         margin-top: 20px;
         display: flex;
@@ -159,82 +197,105 @@
         gap: 15px;
     }
 
-    .editBtn, .correctBtn,.submitBtn {
+    .editBtn,
+    .correctBtn,
+    .submitBtn {
         margin-top: 30px;
         font-size: 20px;
         color: white;
         border: none;
         border-radius: 4px;
         cursor: pointer;
-        width: 150px; /* 設定固定寬度 */
-        height: 50px; /* 設定固定高度 */
-        text-align: center; /* 文字置中 */
-        line-height: 50px; /* 確保文字垂直居中 */
-        
+        width: 150px;
+        /* 設定固定寬度 */
+        height: 50px;
+        /* 設定固定高度 */
+        text-align: center;
+        /* 文字置中 */
+        line-height: 50px;
+        /* 確保文字垂直居中 */
+
     }
 
     .editBtn {
         font-weight: bold;
-        background-color: #f44336; /* 紅色 */
+        background-color: #f44336;
+        /* 紅色 */
     }
 
     .correctBtn,
-    .submitBtn{
+    .submitBtn {
         font-weight: bold;
-        background-color: #4caf50; /* 綠色 */
+        background-color: #4caf50;
+        /* 綠色 */
     }
-    
-    #confirm-message{
-        font-size:30px;
+
+    #confirm-message {
+        font-size: 30px;
         font-weight: bold;
-        align-items: center;   
+        align-items: center;
     }
-    
-    
-/*     手動輸入框 */
+
+
+    /*     手動輸入框 */
     #Modal_typing .modal-body form {
-            display: flex;              /* 使用 Flexbox */
-            flex-direction: column;     /* 子元素垂直排列 */
-            align-items: center;        /* 水平置中 */
-            justify-content: center;    /* 垂直置中 */
-        }
-    
+        display: flex;
+        /* 使用 Flexbox */
+        flex-direction: column;
+        /* 子元素垂直排列 */
+        align-items: center;
+        /* 水平置中 */
+        justify-content: center;
+        /* 垂直置中 */
+    }
+
     #Modal_typing .modal-body input[type="text"] {
-        width:80%;
+        width: 80%;
         padding: 9px;
         font-size: 20px;
-        border: 1px solid #ccc; /* 灰色邊框 */
-        border-radius: 4px; /* 圓角 */
-        vertical-align: middle; /* 垂直對齊 */
-        box-sizing: border-box; /* 包括內邊距 */
-        margin-bottom:20px;
+        border: 1px solid #ccc;
+        /* 灰色邊框 */
+        border-radius: 4px;
+        /* 圓角 */
+        vertical-align: middle;
+        /* 垂直對齊 */
+        box-sizing: border-box;
+        /* 包括內邊距 */
+        margin-bottom: 20px;
     }
-    
-    
-/*     設定框 */
+
+
+    /*     設定框 */
     .settings-modal {
-        display: flex;                /* 使用 Flexbox */
+        display: flex;
+        /* 使用 Flexbox */
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* 背景半透明 */
-        justify-content: center;    /* 水平居中 */
-        align-items: center;        /* 垂直居中 */
+        background: rgba(0, 0, 0, 0.5);
+        /* 背景半透明 */
+        justify-content: center;
+        /* 水平居中 */
+        align-items: center;
+        /* 垂直居中 */
     }
-    
-    
+
+
     .settings-content {
         background: white;
         max-width: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: center;     /* 垂直居中 */
-        align-items: center;         /* 水平居中 */
-        text-align: center;          /* 使所有內部文本居中 */
+        justify-content: center;
+        /* 垂直居中 */
+        align-items: center;
+        /* 水平居中 */
+        text-align: center;
+        /* 使所有內部文本居中 */
     }
-    
+
     .settings-content h2 {
         text-align: center;
         font-size: 28px;
@@ -249,7 +310,9 @@
         margin-bottom: 8px;
         display: block;
     }
-    .settings-content select, .languageBtn {
+
+    .settings-content select,
+    .languageBtn {
         font-weight: bold;
         text-align: center;
         width: 100%;
@@ -260,12 +323,12 @@
         border-radius: 4px;
     }
 
-    .settings-content #saveButton{
+    .settings-content #saveButton {
         font-weight: bold;
         text-align: center;
         width: 50%;
         padding: 10px;
-        margin-top:30px;
+        margin-top: 30px;
         margin-bottom: 15px;
         font-size: 20px;
         border: 1px solid #ccc;
@@ -275,40 +338,49 @@
         border: none;
         cursor: pointer;
     }
-    
-    .settings-content #saveButton:hover{
+
+    .settings-content #saveButton:hover {
         background-color: #5a6268;
     }
-    
+
     .settings-content .languageBtn {
         background-color: #007BFF;
         color: white;
         border: none;
         cursor: pointer;
     }
+
     .settings-content .languageBtn:hover {
-        background-color: #0056b3;  
+        background-color: #0056b3;
     }
-    
-/*     灰色字體 */
+
+    /*     灰色字體 */
     .gray-text {
         color: gray;
     }
+
     .tablerule1,
-    .tablerule2{
+    .tablerule2 {
         font-weight: bold;
     }
+
     .table {
         width: 100%;
-        table-layout: fixed;  /* 這會讓所有的列寬相等 */
-         margin-left: auto;    /* 左邊自動對齊 */
-        margin-right: auto;   /* 右邊自動對齊 */
-    }
-    .table th, .table td {
-        text-align: center;  /* 可選: 將文字置中 */
-        padding: 8px;  /* 可選: 調整內距以增加可讀性 */
+        table-layout: fixed;
+        /* 這會讓所有的列寬相等 */
+        margin-left: auto;
+        /* 左邊自動對齊 */
+        margin-right: auto;
+        /* 右邊自動對齊 */
     }
 
+    .table th,
+    .table td {
+        text-align: center;
+        /* 可選: 將文字置中 */
+        padding: 8px;
+        /* 可選: 調整內距以增加可讀性 */
+    }
 </style>
 {% endblock %}
 
@@ -318,7 +390,7 @@
     <!-- Title Section -->
     <div class="row my-title-row">
         <div class="col">
-            <h1 class="h3 fw-normal py-3 mb-0">VoiceTalk</h1>
+            <h1 class="h3 fw-normal py-3 mb-0">VoiceTalk {{project_name}}</h1>
         </div>
     </div>
 
@@ -336,7 +408,6 @@
             </div>
         </div>
     </div>
-
     <!-- Device Info Accordion -->
     <div class="row my-deviceinfo-row">
         <div class="container-12">
@@ -345,40 +416,22 @@
                 {% for device in device_info %}
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading_{{loop.index}}">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{loop.index}}" aria-expanded="{{ loop.index == 1 }}" aria-controls="collapse_{{loop.index}}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse_{{loop.index}}" aria-expanded="{{ loop.index == 1 }}"
+                            aria-controls="collapse_{{loop.index}}">
                             {{ device }}
                         </button>
                     </h2>
-                    <div id="collapse_{{loop.index}}" class="accordion-collapse collapse {% if loop.index == 1 %}show{% endif %}" aria-labelledby="heading_{{loop.index}}" data-bs-parent="#accordionExample">
+                    <div id="collapse_{{loop.index}}"
+                        class="accordion-collapse collapse {% if loop.index == 1 %}show{% endif %}"
+                        aria-labelledby="heading_{{loop.index}}" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            {% set rule1 = [] %}
-                            {% set rule2 = [] %}
-                            {% for info in device_info[device] %}
-                                {% if info["rule"] == "1" %}
-                                    {% set _ = rule1.append(info) %}
-                                {% elif info["rule"] == "2" %}
-                                    {% set _ = rule2.append(info) %}
-                                {% endif %}
-                            {% endfor %}
-                            {% if rule1 %}
-                            <p><span class="tablerule1">規則一 :</span><br><span style="color:red;">{{rule1[0]["value"][0]}}</span> the {{device}}</p>
-                            <p><span class="tabletext">紅字可改成: </span><br><span style="color:red;">{% for V in rule1[0]["value"] %}{{V}}, {% endfor %}</span>
-                            {% endif %}
-                            {% if rule2 %}
-                            <p><span class="tablerule2">規則二 :</span><br> Set the <span style="color:red;">{{rule2[0]["action"]}}</span> of the {{device}} to <span style="color:blue;">{{rule2[0]["value"][0]}}</span></p>
-                            <table class="table table-striped table-bordered table-sm">
-                                <tr>
-                                    <td>Attribute</td>
-                                    <td>Value</td>
-                                </tr>
-                                {% for info in rule2 %}
-                                <tr>
-                                    <td><span style="color:red;">{{info["action"]}}</span></td>
-                                    <td><span style="color:blue;">{% for V in info["value"] %}{{V}}, {% endfor %}</span></td>
-                                </tr>
+                            <p><strong>Traits:</strong></p>
+                            <ul>
+                                {% for trait in device_info[device] %}
+                                <li>{{ trait }}</li>
                                 {% endfor %}
-                            </table>
-                            {% endif %}
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -386,7 +439,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Footer Section -->
     <div class="footer fixed-bottom">
         <div class="row justify-content-around align-items-center" id="footer-1st-row">
@@ -394,7 +447,8 @@
                 <div class="wrapper">
                     <div class="image-wrapper">
                         <div class="gear" data-bs-toggle="modal" data-bs-target="#Modal_typing">
-                            <img class="icon-img" src="{{url_for('static', filename='images/typing.png')}}" alt="Typing" />
+                            <img class="icon-img" src="{{url_for('static', filename='images/typing.png')}}"
+                                alt="Typing" />
                         </div>
                     </div>
                     <p id="typingBox">手動輸入</p>
@@ -403,8 +457,10 @@
             <div class="col-4">
                 <div class="wrapper">
                     <div class="image-wrapper">
-                        <img class="startstop-img" id="startStopButton" onclick="startstopButton(event)" src="{{ url_for('static', filename='images/start.gif')}}" />
-                        <img class="ban-img" id="ban" src="{{ url_for('static', filename='images/ban.png') }}" style="display: none;"/>
+                        <img class="startstop-img" id="startStopButton" onclick="startstopButton(event)"
+                            src="{{ url_for('static', filename='images/start.gif')}}" />
+                        <img class="ban-img" id="ban" src="{{ url_for('static', filename='images/ban.png') }}"
+                            style="display: none;" />
                     </div>
                     <p id="infoBox">Voice</p>
                 </div>
@@ -412,9 +468,10 @@
             <div class="col-4">
                 <div class="wrapper">
                     <div class="image-wrapper">
-<!--                         <div class="gear" onclick="openSettings()"> -->
+                        <!--                         <div class="gear" onclick="openSettings()"> -->
                         <div class="gear" data-bs-toggle="modal" data-bs-target="#settings-modal">
-                            <img class="icon-img" src="{{url_for('static', filename='images/settings.png')}}" alt="Settings" />
+                            <img class="icon-img" src="{{url_for('static', filename='images/settings.png')}}"
+                                alt="Settings" />
                         </div>
                     </div>
                     <p id="settingsBox">設定</p>
@@ -434,7 +491,7 @@
                 <div class="modal-body">
                     <form method="post">
                         <input type="text" name="corrected_sentence" id="user_typing">
-                        <button type="submit" class = "submitBtn" id="submitBtn">送出</button>
+                        <button type="submit" class="submitBtn" id="submitBtn">送出</button>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -442,7 +499,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Modal for Settings -->
     <div class="modal fade" id="settings-modal" tabindex="-1" aria-labelledby="settingsLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -463,34 +520,34 @@
                             <option value="Dialogflow">Google Dialogflow</option>
                             <option value="STT">Google Speech-to-Text</option>
                         </select>
-<!--                         <button type="button" id="saveButton" onclick="saveSettings()">儲存設定</button> -->
+                        <!--                         <button type="button" id="saveButton" onclick="saveSettings()">儲存設定</button> -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Modal for UserConfirm -->
     <div class="modal fade" id="confirm-modal" tabindex="-1" aria-labelledby="confirmLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmLabel">指令</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p id="confirm-message">內容確認</p>
-                <div class="confirm-buttons">
-                    <button class="editBtn" id="editBtn">更正</button>
-                    <button class="correctBtn" id="correctBtn">正確</button>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmLabel">指令</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirm-message">內容確認</p>
+                    <div class="confirm-buttons">
+                        <button class="editBtn" id="editBtn">更正</button>
+                        <button class="correctBtn" id="correctBtn">正確</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-    
-    
-    
+
+
+
 </div>
 
 {% endblock %}
@@ -500,24 +557,23 @@
     $(document).ready(function () {
         checkWebSpeechAPI();
         startstopButton();
-//         changeLanguage();
+        //         changeLanguage();
     });
     //****************************************************************************************
     // 宣告變數responseBox
     //****************************************************************************************  
     var recognitionTitle = { "en-US": "Recognition Result", "cmn-Hant-TW": "辨識結果" }
     var recognitionBox = document.getElementById("recognitionBox"); // 辨識結果  "HTML元件"
-    var final_transcript = '';
     var responseTitle = { "en-US": "System Response", "cmn-Hant-TW": "系統回覆" }
     var deviceinfoTitle = { "en-US": "Devices and Command Prompt", "cmn-Hant-TW": "設備 & 指令提示" }
     var startStopButton; // 「開始/停止」按鈕
-    
-//     User confirm Box
+
+    //     User confirm Box
     var correctBtn = document.getElementById("correctBtn");
     var editBtn = document.getElementById("editBtn");
     // Typing Box
     var typingTitle = document.getElementById("Modal_typing_Label");
-//     var submitBtn = document.getElementById("submitBtn")
+    //     var submitBtn = document.getElementById("submitBtn")
     var recognizing = false; // 是否辨識中
     var using_tool = "Web Speech API";
     var selectASRtoolList = document.getElementById("selectASRtoolList"); // 語言選擇的下拉式選單
@@ -530,26 +586,33 @@
     var typingMessage = { "en-US": "Typing", "cmn-Hant-TW": "手動輸入" }
     var settingsMessage = { "en-US": "Settings", "cmn-Hant-TW": "設定" }
     // Settings Box
-    var languageBtnMessage =  { "en-US": "English", "cmn-Hant-TW": "中文" }
-    var languageLabel =  { "en-US": "Language", "cmn-Hant-TW": "語言" }
-    var modelLabel =  { "en-US": "Model", "cmn-Hant-TW": "模型" }
-    var saveButton =  { "en-US": "Save Settings", "cmn-Hant-TW": "儲存設定" }
-    var cancelBtnMessage =  { "en-US": "Cancel", "cmn-Hant-TW": "取消" } //與Typing Box共用
+    var languageBtnMessage = { "en-US": "English", "cmn-Hant-TW": "中文" }
+    var languageLabel = { "en-US": "Language", "cmn-Hant-TW": "語言" }
+    var modelLabel = { "en-US": "Model", "cmn-Hant-TW": "模型" }
+    var saveButton = { "en-US": "Save Settings", "cmn-Hant-TW": "儲存設定" }
+    var cancelBtnMessage = { "en-US": "Cancel", "cmn-Hant-TW": "取消" } //與Typing Box共用
     // User confirm Box
-    var correctBtnMessage =  { "en-US": "Correct", "cmn-Hant-TW": "正確" }
-    var editBtnMessage =  { "en-US": "Edit", "cmn-Hant-TW": "更正" }
-    var confirmLabelMessage =  { "en-US": "Instruction", "cmn-Hant-TW": "指令" }
+    var correctBtnMessage = { "en-US": "Correct", "cmn-Hant-TW": "正確" }
+    var editBtnMessage = { "en-US": "Edit", "cmn-Hant-TW": "更正" }
+    var confirmLabelMessage = { "en-US": "Instruction", "cmn-Hant-TW": "指令" }
     // Typing Box
     var submitBtnMessage = { "en-US": "Submit", "cmn-Hant-TW": "送出" }
     //  Device and Comman Prompt
-    var tabletextMessage = {"en-US": "Red text can be changed to:", "cmn-Hant-TW": "紅字可改成: "}
-    var tablerule1Message= {"en-US": "Rule 1:", "cmn-Hant-TW": "規則一: "}
-    var tablerule2Message= {"en-US": "Rule 2:", "cmn-Hant-TW": "規則二: "}
-    
-    var waitMessage = {"en-US": "wait...", "cmn-Hant-TW": "請稍等..."}
-    
-    // var mediaRecorder;
+    var tabletextMessage = { "en-US": "Red text can be changed to:", "cmn-Hant-TW": "紅字可改成: " }
+    var tablerule1Message = { "en-US": "Rule 1:", "cmn-Hant-TW": "規則一: " }
+    var tablerule2Message = { "en-US": "Rule 2:", "cmn-Hant-TW": "規則二: " }
 
+    var waitMessage = { "en-US": "wait...", "cmn-Hant-TW": "請稍等..." }
+    const project_name = "{{ project_name }}"
+    const device_info = "{{ device_info }}"
+    var final_transcript = '';
+    var corrected_sentence = '';
+    var after_recognition_flag = false
+    var wrong_sentence = ""
+    // var mediaRecorder;
+    const typingElement = document.getElementById('Modal_typing');
+    const confirmElement = document.getElementById('confirm-modal');
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirm-modal'));
     // testing execution time
     var start_time = 0
     var recognition_end_time = 0
@@ -560,21 +623,19 @@
     let recordedChunks = [];
     // 新
     let language = 'cmn-Hant-TW';
-    
+
     function toggleBan(status) {
         const banImage = document.getElementById("ban");
         // 切換圖片的顯示狀態
-        banImage.style.display = status; 
+        banImage.style.display = status;
     }
 
-    
-    
     function toggleLanguage() {
         language = language === 'cmn-Hant-TW' ? 'en-US' : 'cmn-Hant-TW';
         $("#responseBox").val(""); //清空 系統回應
         $("#recognitionBox").val(""); //清空 HTML的辨識結果 “可視的元件”
         final_transcript = "";   //清空 API的辨識結果 "變數"
-        
+
         $('#settingsLabel').html(settingsMessage[language])
         $("#languageBtn").html(languageBtnMessage[language])
         $("#languageLabel").html(languageLabel[language])
@@ -592,12 +653,12 @@
         $("#submitBtn").html(submitBtnMessage[language])
         $("#confirmLabel").html(confirmLabelMessage[language])
         $("#typingLabel").html(typingMessage[language])
-//         Device and Comman Prompt
-         $(".tabletext").html(tabletextMessage[language])
+        //         Device and Comman Prompt
+        $(".tabletext").html(tabletextMessage[language])
         $(".tablerule1").html(tablerule1Message[language])
         $(".tablerule2").html(tablerule2Message[language])
-       
-        
+
+
     }
     function saveSettings() {
         console.log("Settings saved");
@@ -606,7 +667,7 @@
         const myModal = bootstrap.Modal.getInstance(myModalEl);  // 獲取已經初始化的 modal 實例
         myModal.hide();  // 使用 hide 方法來隱藏模態框
     }
-    
+
     // 定義錄音相關功能
     // 在 async 中可以用 try...catch 來捕捉錯誤
     async function initRecorder() {
@@ -687,6 +748,24 @@
 
     // 將資料(變數:data) 傳到後端的 route(變數:url)。
     // 使用 Promise 來處理非同步的操作，只需要搭配 .then() 跟 .catch() 就能接續處理，防止在還沒取得後端回覆前就執行後面的程式碼
+    function sentence_correction(url, data) {
+        return new Promise((resolve, reject) => {
+            $.getJSON({
+                url: url,
+                data: data,
+                success: function (data) {
+                    // 將回傳到 'then'
+                    resolve(data);
+                },
+                error: function () {
+                    reject("Failed to get data from server"); // 如果失敗，調用 reject
+                }
+            });
+        });
+    }
+
+    // 將資料(變數:data) 傳到後端的 route(變數:url)。
+    // 使用 Promise 來處理非同步的操作，只需要搭配 .then() 跟 .catch() 就能接續處理，防止在還沒取得後端回覆前就執行後面的程式碼
     function process_sentence(url, data) {
         return new Promise((resolve, reject) => {
             $.getJSON({
@@ -713,24 +792,24 @@
     // input: event driven  
     // output: recognition.lang is changed  
 
-//     function changeLanguage(event) {
-//         if (recognizing) { recognition.stop(); } //如果正在辨識, 就停止
-//         language = selectLanguageButton.value;
-//         if (language == "cmn-Hant-TW") { language = "en-US"; selectLanguageButton.src = "{{ url_for('static', filename='images/en-US.png') }}" }
-//         else if (language == "en-US") { language = "cmn-Hant-TW"; selectLanguageButton.src = "{{ url_for('static', filename='images/cmn-Hant-TW.png') }}" }
-//         console.log("change to", language);
-//         selectLanguageButton.value = language;
+    //     function changeLanguage(event) {
+    //         if (recognizing) { recognition.stop(); } //如果正在辨識, 就停止
+    //         language = selectLanguageButton.value;
+    //         if (language == "cmn-Hant-TW") { language = "en-US"; selectLanguageButton.src = "{{ url_for('static', filename='images/en-US.png') }}" }
+    //         else if (language == "en-US") { language = "cmn-Hant-TW"; selectLanguageButton.src = "{{ url_for('static', filename='images/cmn-Hant-TW.png') }}" }
+    //         console.log("change to", language);
+    //         selectLanguageButton.value = language;
 
-//         $("#responseBox").val(""); //清空 系統回應
-//         $("#recognitionBox").val(""); //清空 HTML的辨識結果 “可視的元件”
-//         final_transcript = "";   //清空 API的辨識結果 "變數"
+    //         $("#responseBox").val(""); //清空 系統回應
+    //         $("#recognitionBox").val(""); //清空 HTML的辨識結果 “可視的元件”
+    //         final_transcript = "";   //清空 API的辨識結果 "變數"
 
-//         recognition.lang = language;   //辨識API切換至當前語言
-//         $("#recognitionTitle").html(recognitionTitle[language]) // 辨識欄位的標題切換至當前語言
-//         $("#responseTitle").html(responseTitle[language])       // 回應欄位的標題切換至當前語言
-//         $("#deviceinfoTitle").html(deviceinfoTitle[language])   // 回應欄位的標題切換至當前語言
-//         infoBox.innerText = startMessage[language]              // 提示使用者的訊息切換至當前語言
-//     }
+    //         recognition.lang = language;   //辨識API切換至當前語言
+    //         $("#recognitionTitle").html(recognitionTitle[language]) // 辨識欄位的標題切換至當前語言
+    //         $("#responseTitle").html(responseTitle[language])       // 回應欄位的標題切換至當前語言
+    //         $("#deviceinfoTitle").html(deviceinfoTitle[language])   // 回應欄位的標題切換至當前語言
+    //         infoBox.innerText = startMessage[language]              // 提示使用者的訊息切換至當前語言
+    //     }
 
     //=============== funtion changeASRtool(event) =======================
     // This function is triggered when dropdown menu of ASR tools list is selected
@@ -742,7 +821,7 @@
     function changeASRtool(event) {
         if (recognizing) { recognition.stop(); } //如果正在辨識, 就停止
         using_tool = document.getElementById("selectASRtoolList").value
-//         using_tool = selectASRtoolList.options[selectASRtoolList.selectedIndex].value; // 取得被選擇的模型
+        //         using_tool = selectASRtoolList.options[selectASRtoolList.selectedIndex].value; // 取得被選擇的模型
         // if (language == "cmn-Hant-TW") { language = "en-US"; selectLanguageButton.src = "{{ url_for('static', filename='images/en-US.png') }}" }
         // else if (language == "en-US") { language = "cmn-Hant-TW"; selectLanguageButton.src = "{{ url_for('static', filename='images/cmn-Hant-TW.png') }}" }
         console.log("tool change to", using_tool);
@@ -763,9 +842,9 @@
         startStopButton = document.getElementById("startStopButton"); // 取得「辨識/停止」這個按鈕控制項
         // selectLanguageList = document.getElementById("selectLanguageList");
         // language = selectLanguageList.options[selectLanguageList.selectedIndex].value;
-//         language = selectLanguageButton.value;
+        //         language = selectLanguageButton.value;
         if (using_tool == "Web Speech API") {
-            console.log("now is Web Speech API",language)
+            console.log("now is Web Speech API", language)
             if (recognizing) { // 如果正在辨識，則停止。
                 recognition.stop();
                 // // 若有需要使用後端回傳的資料，再把 process_sentence 後面的 .then 跟 .catch 打開來用
@@ -782,16 +861,13 @@
             }
         }
         else {
-            console.log("now is", using_tool,language)
-                
-            
+            console.log("now is", using_tool, language)
             // 只有 web speech api 是自己處理出 ASR，其他三個工具(Whisper, DialogFlow, STT) 都是錄音檔傳到後端處理。
             if (recognizing) { // 如果正在辨識，則停止。
                 await stopRecording();
                 $("#recognitionBox").val(waitMessage[language]).addClass("gray-text");
                 toggleBan("block")
                 sendToBackend()
-                    
             }
             else {
                 startRecording()
@@ -802,58 +878,25 @@
     // 定義產生並顯示系統回復的 function
     function handlingSystemReplies(data) {
         if (language == "en-US") {
-            console.log("data recieve", data)
-            console.log("valid bit frontend", data.valid)
             if (data.valid < 0) {
-                renderhtml = data.response
-                switch (data.valid) {
-                    case -1: renderhtml = "The number of device/device feature should be one, not multiple."; break;
-                    case -2: renderhtml = "No device found in the sentence."; break;
-                    case -3: renderhtml = "No device feature found in the sentence"; break;
-                    case -4: renderhtml = "Device " + data.name + " does not support " + data.feature; break;
-                    case -5: renderhtml = "The value" + data.value + " in sentence cause error"; break;
-                }
+                renderhtml = "Sorry. Please try again!";
             }
             else {
-                if (data.valid == 1) {
-                    // renderhtml = data.response + data.name + " is set to " + data.feature
-                    renderhtml = data.response + data.name + " is set to " + data.value
-                }
-                else {
-                    renderhtml = data.response + data.name + "'s " + data.feature + " is set to " + data.value
-                }
+                renderhtml = `OK, ${data.DeviceName}'s "${data.Trait}" is set to "${data.InputValue}"`;
             }
         }
         else if (language == "cmn-Hant-TW") {
-            console.log("data recieve", data)
-            console.log("valid bit frontend", data.valid)
             if (data.valid < 0) {
-                renderhtml = data.response + data.valid
-                switch (data.valid) {
-                    case -1: renderhtml = "句子中的電器/電器功能的數量僅能為一個"; break;
-                    case -2: renderhtml = "句子中未包含電器"; break;
-                    case -3: renderhtml = "句子中未包含電器功能"; break;
-                    case -4: renderhtml = data.name + " 不支援 " + data.feature; break;
-                    case -5: renderhtml = "句子中的數值" + data.value + "有誤"; break;
-                    case -6: renderhtml = "句子中的數值" + data.value + "超出範圍"; break;
-
-                }
+                renderhtml = "對不起。請再試一次！"
             }
             else {
-                if (data.valid == 1) {
-                    // renderhtml = data.response + data.name + "即將" + data.feature
-                    renderhtml = data.response + data.name + "即將" + data.value
-                }
-                else {
-                    renderhtml = data.response + data.name + "的" + data.feature + "將設定為" + data.value
-                }
+                renderhtml = `收到，${data.DeviceName}的"${data.Trait}"將設定為"${data.InputValue}"`;
             }
         }
         console.log("renderhtml =", renderhtml);
         $("#responseBox").removeClass("gray-text");
         $("#responseBox").val(renderhtml);
-        toggleBan("none"); 
-        
+        toggleBan("none");
     }
 
     // 定義 web speech api 的 function
@@ -872,7 +915,7 @@
                 recognizing = true; // 設定為辨識中
                 infoBox.innerText = stopMessage[language] // 提示使用者點選按鈕停止
                 startStopButton.src = "{{ url_for('static', filename='images/start.gif') }}";
-                
+
             };
 
             recognition.onend = function () { // 辨識完成
@@ -891,66 +934,74 @@
                 // testing execution time
                 start_time = new Date().getTime();
                 console.log("自動停止辨識 : " + start_time / 1000 + "sec");
-                
-                if (final_transcript.trim().length > 0) { // 如果有最終辨識文字
-                    UserConfirmBox(final_transcript);
+                final_transcript = final_transcript.trim()
+                if (final_transcript.length > 0) { // 如果有最終辨識文字
+                    console.log("*** SentenceCorrection")
+                    sentence_correction(
+                        url = "/SentenceCorrection",
+                        data = { sentence: final_transcript }
+                    ).then((response) => {
+                        // 成功時處理
+                        corrected_sentence = response.corrected_sentence
+                        UserConfirmBox();
+                    }).catch((error) => {
+                        console.error("Error:", error);
+                        alert("Failed to correct sentence.");
+                    })
                 }
-                else{
+                else {
                     $("#recognitionBox").val("");
                 }
             };
         }
     }
-    
-    
-    function UserConfirmBox(speechResult) {
-        const typingElement = document.getElementById('Modal_typing');
-        const confirmElement = document.getElementById('confirm-modal');
-        const confirmModal = new bootstrap.Modal(document.getElementById('confirm-modal'));
+
+
+    function UserConfirmBox() {
         toggleBan("block");
         confirmModal.show();
-        $('#confirm-message').html(speechResult)
-        
-        // 當模態框隱藏時，隱藏ban圖片
-        confirmElement.addEventListener('hide.bs.modal', () => {
-            toggleBan("none");
-            recognitionBox.value ="";
-        }); 
-        
-        // 處理按鈕點擊
-        correctBtn.addEventListener('click', () => {
-            console.log("coorctBtn click");
-            console.log(speechResult);
-            
-            process_sentence(
-                url = "/ProcessSentence",
-                data = { language: language, sentence: speechResult }
-            )
-            confirmModal.hide();
-            $("#recognitionBox").removeClass("gray-text");
-            $("#recognitionBox").val(speechResult)
-            $("#responseBox").val(waitMessage[language]).addClass("gray-text");
-            toggleBan("block");
-        });
+        $('#confirm-message').html(corrected_sentence)
 
-       editBtn.addEventListener('click', () => {
-            // 將辨識結果放到手動輸入欄位，讓使用者修改，再將 after_recognition_flag 設為 true
-            after_recognition_flag = true
-            confirmModal.hide();
-            toggleBan("block");
-            // 自動打開Typing畫面
-            $('#Modal_typing').modal('show');
-            $("#user_typing").val(speechResult);
-            $("#typingLabel").html(editBtnMessage[language]);
-            // 當模態框隱藏時，隱藏ban圖片
-            typingElement.addEventListener('hide.bs.modal', () => {
-                toggleBan("none");
-            });
-            
-        });
     }
+    // 當模態框隱藏時，隱藏ban圖片
+    confirmElement.addEventListener('hide.bs.modal', () => {
+        toggleBan("none");
+        recognitionBox.value = "";
+    });
 
-    
+    // 處理按鈕點擊
+    correctBtn.addEventListener('click', () => {
+        console.log("coorctBtn click");
+        console.log(corrected_sentence);
+        console.log("*** ProcessSentence")
+
+        process_sentence(
+            url = "/ProcessSentence",
+            data = { language: language, sentence: corrected_sentence, project_name: project_name }
+        )
+        confirmModal.hide();
+        $("#recognitionBox").removeClass("gray-text");
+        $("#recognitionBox").val(corrected_sentence)
+        $("#responseBox").val(waitMessage[language]).addClass("gray-text");
+        toggleBan("block");
+    });
+
+    editBtn.addEventListener('click', () => {
+        // 將辨識結果放到手動輸入欄位，讓使用者修改，再將 after_recognition_flag 設為 true
+        after_recognition_flag = true
+        wrong_sentence = corrected_sentence
+        confirmModal.hide();
+        toggleBan("block");
+        // 自動打開Typing畫面
+        $('#Modal_typing').modal('show');
+        $("#user_typing").val(corrected_sentence);
+        $("#typingLabel").html(editBtnMessage[language]);
+    });
+    // 當模態框隱藏時，隱藏ban圖片
+    typingElement.addEventListener('hide.bs.modal', () => {
+        toggleBan("none");
+    });
+
     function sendToBackend() {
         console.log("sendToBackend")
         let formData = new FormData();
@@ -960,23 +1011,36 @@
 
         let request = new XMLHttpRequest();
         // 先將音檔傳到後端("/save")跑 ASR，再將 ASR 結果傳到後端("/ProcessSentence")跑指令處理
+        console.log("*** save")
         request.open("POST", "/save");
         request.onreadystatechange = () => {
             if (request.readyState == 4) {
                 var res = JSON.parse(request.responseText);
                 if (res.sentence != "") {
+                    final_transcript = res.sentence
                     console.log(request.readyState);
-                    UserConfirmBox(res.sentence);
+                    console.log("*** SentenceCorrection")
+                    sentence_correction(
+                        url = "/SentenceCorrection",
+                        data = { sentence: final_transcript }
+                    ).then((response) => {
+                        // 成功時處理
+                        corrected_sentence = response.corrected_sentence
+                        UserConfirmBox();
+                    }).catch((error) => {
+                        console.error("Error:", error);
+                        alert("Failed to correct sentence.");
+                    })
                 }
-                else{
+                else {
                     console.log("nothing");
                     $("#recognitionBox").val("");
                     toggleBan("none")
                 }
             }
         }
-            request.send(formData);
-           
+        request.send(formData);
+
         console.log("傳送成功");
     };
 
@@ -994,14 +1058,16 @@
             $("#recognitionBox").val(corrected_sentence);
             $("#responseBox").val(waitMessage[language]).addClass("gray-text");
             toggleBan("block");
+            console.log("*** ManualTyping")
             $.getJSON({
                 type: 'POST',
                 url: '/ManualTyping',
                 data: {
                     language: language,
                     corrected_sentence: corrected_sentence,
-                    wrong_sentence: $("#recognitionBox").val(),
-                    after_recognition_flag: after_recognition_flag
+                    wrong_sentence: wrong_sentence,
+                    after_recognition_flag: after_recognition_flag,
+                    project_name: project_name
                 },
                 // $('form').serialize() + "&wrong_sentence=" + $("#recognitionBox").val() + "&after_recognition_flag=" + after_recognition_flag,
                 success: function (data) {
@@ -1010,25 +1076,27 @@
                     submitBtn.disabled = false;
                     submitBtn.textContent = "Submit"
                     // 將使用者手動輸入內容放到 Recognition Result，並清空手動輸入欄位，再將 after_recognition_flag 設為 false
-//                     recognitionBox.value = corrected_sentence;
+                    //                     recognitionBox.value = corrected_sentence;
                     after_recognition_flag = false
                 },
                 error: function () {
                     alert("fail")
                 }
             });
+            wrong_sentence = ""
+            after_recognition_flag = false
         });
     });
     $(document).ready(function () {
         // 只針對特定的 .gear 按鈕進行處理
         $('div.gear[data-bs-target="#Modal_typing"]').on('click', function () {
-            if (language=='cmn-Hant-TW'){
+            if (language == 'cmn-Hant-TW') {
                 $('#typingLabel').text("手動輸入");
-            }else{
+            } else {
                 $('#typingLabel').text("Typing");
             }
             $("#user_typing").val("");
-            
+
         });
     });
 

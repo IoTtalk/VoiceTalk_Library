@@ -1,7 +1,0 @@
-IDF,Rule,Param_dim,Param_type,Param_unit,Param_minmax
-Switch,1,1,int,None,"[0,1]"
-Luminance,2,1,int,None,"[0,10]"
-Speed,2,1,int,None,"[0,10]"
-ColorTemperature,2,1,int,None,"[0,10]"
-Color,2,3,"['int','int','int']","['None','None','None']","['[0,255]','[0,255]','[0,255]']"
-Time,2,1,int,second,"[0,3600]"

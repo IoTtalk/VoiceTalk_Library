@@ -1,0 +1,532 @@
+{% extends "base.html" %}
+
+<!-- 在模板中填入 head 內容 -->
+{% block head %}
+<title>VoiceTalk Management</title>
+<link rel="stylesheet" href="static/css/other/main.css">
+
+
+<style>
+:root {
+    --border-color: #000;
+    --border-radius: 6px;
+    --font-size: 16px;
+    --padding: 5px;
+    --hover-background: #c0c0c0;
+}
+
+.content-area, .dm_container {
+    margin-top: 5px;
+    margin-left: 10px;
+    padding: 20px;
+    width: 50%;
+    height: 90vh;
+    background-color: white;
+    text-align: center;
+    border-radius: 8px;
+    border: 3px solid var(--border-color); 
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+.class-select, #select-box {
+    border: 2px solid var(--border-color);
+    width: 20%;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    padding: var(--padding);
+    font-size: 18px;
+    color: black;
+    letter-spacing: 0.5px;
+}
+
+.list-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.inlist-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 10px;
+    width: 100%;
+}
+
+.inlistup-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    letter-spacing: 0.5px;
+}
+
+#showselected {
+    border: 2px solid var(--border-color);
+    display: inline-block;
+    width: 50%;
+    height: 3vh;
+    overflow: hidden;
+    text-align: center;
+    margin-left: -20px;
+    padding: 0 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    vertical-align: middle;
+    box-sizing: border-box;
+    letter-spacing: 0.5px;
+}
+
+#addButtonimg {
+    width: 30px;
+    height: 30px;
+    margin-left: -20px;
+}
+
+#leftSelect, #rightSelect {
+    padding: 8px;
+    margin-top: 20px;
+    width: 90%;
+    height: 40vh;
+    border: 5px solid #36454F; 
+    border-radius: var(--border-radius);
+    padding-right: 30px;
+    appearance: none;
+    background-color: white;
+    position: relative;
+}
+
+#leftSelect option, #rightSelect option {
+    padding: 4px 6px;
+    font-size: var(--font-size);
+    letter-spacing: 0.5px;
+}
+
+label {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#saveButton {
+    background-color: #d3d3d3;
+    width: 20%;
+    height: 3vh;
+    color: black;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+}
+
+#saveButton:hover {
+    background-color: var(--hover-background);
+}
+
+    
+</style>
+{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+  <div id="header">
+    <nav id="nav" class="navigation lcyan">
+      <div class="container" style="width:100%; padding:0 0 0 0;">
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="menu fading">
+              <li><a href="#" onclick="window.open('http://vt.iottalk.tw:7788/dfm', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes'); return false;">Device Feature</a></li>
+<!--               <li><a href="http://vt.iottalk.tw:7788/dfm" target="_blank">Device Feature</a></li> -->
+              <li class="category"><a href="#" id="trait-toggle" onclick="showManagement('trait')">Trait</a></li>
+              <li class="category"><a href="#" id="dm-toggle" onclick="showManagement('dm')">Device Model</a></li>
+               <li><a href="#" onclick="window.open('http://vt.iottalk.tw:7788/connection', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes'); return false;">Project</a></li>
+<!--               <li><a href="http://vt.iottalk.tw:7788/connection">Project</a></li> -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="management-container">
+      <!-- 顯示區域，根據選擇顯示 Trait 或 DM 管理 -->
+      <div class="content-area" id="content-area" style="display: none;">
+        <div class="title" id="management-title"></div>
+
+        <div class="title">
+          <span id="select-name"></span> :  
+          <select id="select-box" class="class-select">
+            <option value="add_new">Add new</option>
+          </select>
+        </div>
+
+        <div class="list-container">
+          <!-- 左側選擇區域 -->
+          <div class="inlist-container">
+            <div class="inlistup-container">
+              <label for="leftSelect" id="left-label"></label>
+              <span id="showselected"></span>
+              <img class="add-img" id="addButtonimg" onclick="moveSelectedOption()" src="/static/images/add-button.png" alt="Add" />
+            </div>
+            <div class="inlistdown-container">
+              <select id="leftSelect" size="12">
+                <!-- Left select options will be populated dynamically -->
+              </select>
+            </div>
+          </div>
+
+          <!-- 右側顯示區域 -->
+          <div class="inlist-container">
+            <div class="inlistup-container">
+              <label for="rightSelect" id="right-label"></label>
+              <button id="saveButton">OK</button>
+            </div>
+            <div class="inlistdown-container">
+              <select id="rightSelect" size="12">
+                <!-- Right select options will be populated dynamically -->
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    
+    
+    
+</div>
+
+{% endblock %}
+
+<!-- Script block -->
+{% block script %}
+<script type="text/javascript">
+    let DF_LIST = []; // 初始值為空
+    let initialDFList = []; // 用於保存 DF_LIST 的拷貝
+    let Exist_Trait = {};
+    let Exist_DM = {}
+    let currentType = ""
+    
+    function showManagement(type) {
+      document.getElementById("content-area").style.display = 'block';
+
+      // 設置標題和選項
+      if (type === 'trait') {
+          
+        currentType = "trait";
+        refreshExist(currentType);
+        resetSelects(currentType);
+        document.getElementById("management-title").innerText = "Trait Management";
+        document.getElementById("select-name").innerText = "Trait Name";
+        document.getElementById("left-label").innerText = "Select DF:";
+        document.getElementById("right-label").innerText = "DF_list";
+        document.getElementById("saveButton").innerText = "OK";
+
+        } else if (type === 'dm') {
+            
+            currentType = "dm";
+            refreshExist(currentType);
+            
+            resetSelects(currentType);
+            document.getElementById("management-title").innerText = "VoiceTalk Device Model Management";
+            document.getElementById("select-name").innerText = "DM Name";
+            document.getElementById("left-label").innerText = "Select Trait:";
+            document.getElementById("right-label").innerText = "Trait_list";
+            document.getElementById("saveButton").innerText = "OK";
+            }
+    }
+    // 在trait頁面：要更新trait和DF
+    // 在DM頁面：要更新DM 和 trait
+    function refreshExist(currentType, box) {
+        // 更新Trait : 上方選項
+        if (currentType === "trait") {
+            fetch('/UpdateTrait')  // 请求更新后的特征数据
+                .then(response => response.json())
+                .then(data => {
+                    let select = document.getElementById('select-box'); 
+                    const firstOption = select.querySelector('option[value="add_new"]');  // 獲取“Add new ”選項
+                    select.innerHTML = ''; 
+                    // 把"Add new"選項重新添加回去
+                    select.appendChild(firstOption);  
+
+                    // 更新所有 function 中使用的 Exist_Trait
+                    Exist_Trait = data.Exist_Trait || {};
+                    for (const trait in data.Exist_Trait) {
+                        
+                        if (data.Exist_Trait.hasOwnProperty(trait)) {
+                            let option = document.createElement('option');
+                            option.value = trait;  
+                            option.textContent = trait; 
+                            select.appendChild(option);
+                        }
+                    }
+                })
+                .catch(error => console.error('Error fetching updated traits:', error));
+            console.log("Refresh Trait");
+            // 更新 DF : 左邊選項
+            fetch('/UpdateDF')  
+                .then(response => response.json())
+                .then(data => {
+                     const leftSelect = document.getElementById("leftSelect");
+ 
+                    if (Array.isArray(data.DF_list)) {
+                        // 更新DF_LIST
+                        DF_LIST = data.DF_list; 
+                        initialDFList = [...DF_LIST];
+                        //DF_LIST加到下拉選項
+                        data.DF_list.forEach(df => {
+                            let option = document.createElement("option");
+                            option.innerText = df;
+                            leftSelect.appendChild(option);
+                        });
+                    } else {
+                        console.error("DF_list is not an array or undefined:", data.DF_list);
+                    }
+                }
+                     )           
+                .catch(error => console.error("Error fetching updated DF_LIST:", error));
+            console.log("Refresh DF");
+        // 更新 DM : 上方選項
+        } else if (currentType === "dm") {
+            fetch('/UpdateDM')
+                .then(response => response.json())
+                .then(data => {
+                    let select = document.getElementById('select-box');
+                    const firstOption = select.querySelector('option[value="add_new"]');  // 获取“Add new Trait”选项
+                    select.innerHTML = '';  
+                    select.appendChild(firstOption);  
+
+                    // 更新Exist_DM
+                    Exist_DM = data.Exist_DM;
+                    IoTtalk_DM = data.IoTtalk_DM
+                    for (const dm in data.Exist_DM) {
+                        if (data.Exist_DM.hasOwnProperty(dm)) {
+                            let option = document.createElement('option');
+                            option.value = dm;  
+                            option.textContent = dm;  
+                            select.appendChild(option);
+                            
+                        }
+                    }
+                })
+                .catch(error => console.error('Error fetching updated dm:', error));
+            console.log("Refresh DM");
+            // 更新Trait : 左邊框框選項
+            fetch('/UpdateTrait') 
+                .then(response => response.json())
+                .then(data => {
+                    const leftSelect = document.getElementById("leftSelect");
+                    leftSelect.innerHTML = '';  
+                    Exist_Trait = data.Exist_Trait || {};
+                    for (const trait in data.Exist_Trait) {                        
+                        if (data.Exist_Trait.hasOwnProperty(trait)) {
+                            let option = document.createElement("option");
+                            option.value = trait; 
+                            option.textContent = trait;
+                            leftSelect.appendChild(option);
+                        }
+                    }
+                })
+                .catch(error => console.error('Error fetching updated traits:', error));
+            console.log("Refresh Trait");
+        }
+    }
+    //於上方框框中選中Triat(DM)，右邊框框要顯示其已有的DF(Trait)
+    document.querySelector(".class-select").addEventListener('change', function () {
+        var Exist_Data = currentType === 'trait' ? Exist_Trait : Exist_DM;
+
+        const Trait_LIST = Object.keys(Exist_Trait);
+        var AllList = currentType === 'trait' ? DF_LIST : Trait_LIST;
+        resetSelects(currentType);
+
+        const selectedData = this.value;
+
+        const rightSelect = document.getElementById('rightSelect');
+        const leftSelect = document.getElementById('leftSelect');
+
+        rightSelect.innerHTML = '';
+        if (selectedData !== 'add_new' && Exist_Data[selectedData]) {
+            console.log("DM/Trait:", selectedData);
+            let dfList = Exist_Data[selectedData] || [];
+            const jsonString = dfList.replace(/'/g, '"');
+            dfList = JSON.parse(jsonString); 
+
+            dfList.forEach(df => {
+                const option = document.createElement('option');
+                option.textContent = df;
+                rightSelect.appendChild(option);
+            });
+            
+            const filteredDFList = AllList.filter(df => !dfList.includes(df));
+            leftSelect.innerHTML = ''; // Clear left select dropdown
+            filteredDFList.forEach(df => {
+                const option = document.createElement('option');
+                option.textContent = df;
+                leftSelect.appendChild(option);
+            });     
+       
+        }else{
+            resetSelects(currentType);
+            console.log("No DF found for the selected trait or 'Add new' was chosen.");
+        }
+       
+    });
+
+    // 更新左邊框框選項並保留順序
+    function resetSelects(currentType) {
+        let initialTraitList = Object.keys(Exist_Trait);
+        var initialData = currentType === "trait" ? initialDFList : initialTraitList;
+        document.getElementById('showselected').innerText = "";
+        leftSelect.innerHTML = '';
+        rightSelect.innerHTML = '';
+
+        // 恢復左邊框框選項並保持順序
+        initialData.forEach((df) => {
+            const option = document.createElement('option');
+            option.textContent = df;
+            leftSelect.appendChild(option);
+        });
+    }
+    // DF(Trait)的左右移動
+    function moveSelectedOption() {
+        let initialTraitList = Object.keys(Exist_Trait);
+        var initialData = currentType === "trait" ? initialDFList : initialTraitList;
+
+        // 依照按鈕選擇目標，如果是+號，source為左邊、target為右邊
+        var currentUrl = addButtonimg.src.split("/")[addButtonimg.src.split("/").length - 1];
+        var sourceSelect = currentUrl === "add-button.png" ? leftSelect : rightSelect;
+        var targetSelect = currentUrl === "add-button.png" ? rightSelect : leftSelect;
+        
+        // 選中項目
+        var selectedOption = sourceSelect.options[sourceSelect.selectedIndex];
+
+            if (selectedOption) {
+            var newOption = document.createElement("option");
+            newOption.text = selectedOption.text;
+
+            // 從右邊移回左邊要保持順序
+            if (targetSelect === leftSelect) {
+                // 在原始顺序中插入
+                const originalIndex = initialData.indexOf(selectedOption.text);
+                const optionsArray = Array.from(targetSelect.options);
+                // 确保按照原始顺序插入
+                targetSelect.add(newOption, optionsArray[originalIndex] || null);
+            } else {
+                // 直接在右邊框框添加
+                targetSelect.add(newOption);
+            }
+
+            // 來源處的選項移除
+            sourceSelect.remove(sourceSelect.selectedIndex);
+        }
+
+           
+      }
+
+    // 當選擇了左側的項目時，顯示 "加號"
+    leftSelect.addEventListener('change', () => {
+        addButtonimg.src = "{{ url_for('static', filename='images/add-button.png') }}";
+        setText();
+    });
+    
+    // 當選擇了右側的項目時，顯示 "減號"
+    rightSelect.addEventListener('change', () => {
+        addButtonimg.src = "{{ url_for('static', filename='images/delete-button.png') }}";
+        setText();
+    });
+
+    //將選中DF(Trait)顯示於上面空白框框中(showselected)
+    function setText() {
+        var currentUrl = addButtonimg.src.split("/")[addButtonimg.src.split("/").length - 1];
+        var deleteSelect = currentUrl === "add-button.png" ? rightSelect: leftSelect;
+        var selectedOption = currentUrl === "add-button.png" ? leftSelect.options[leftSelect.selectedIndex] : rightSelect.options[rightSelect.selectedIndex];
+        //消除不必要的反灰顯示
+        deleteSelect.selectedIndex=-1;
+
+        // 如果選擇了項目，顯示選中的文字，否則顯示空
+        document.getElementById('showselected').innerText = selectedOption ? selectedOption.text : "";
+    }
+    
+    
+    // 儲存Trait(DM)，如果是新的則需要命名並傳送到後端
+    // 已存在則會在預設命名處出現已存在的名稱供使用者修改，若沿用舊名稱儲存則會儲存失敗。
+    // DM會多考慮是否會與vt.iottalk的DM重複，若有重複也不行
+    document.getElementById("saveButton").addEventListener("click", function() {
+        const Exit_Data = currentType === "trait" ? Exist_Trait:IoTtalk_DM
+        const classSelect = document.querySelector(".class-select");
+        const selectedClass = classSelect.value;
+        // 選中 Trait(DM) 的名稱，對於「已存在的」預設填入選中的名稱，讓用戶修改
+        const defaultName = selectedClass === "add_new" ? "" : selectedClass;
+        const AddName = currentType === "trait" 
+            ? prompt("The trait name: ", defaultName) 
+            : prompt("The DM name: ", defaultName);
+        // 輸入的名稱不能與已存在的Trait(DM)重複也不能為空白
+        if (!(AddName in Exit_Data) && AddName.trim() !== ""){
+            console.log(currentType+" to DB");
+            // 收集已選擇的DF(trait)值
+            var selectedValues = [];
+            if (rightSelect) {
+                for (var i = 0; i < rightSelect.options.length; i++) {
+                    selectedValues.push(rightSelect.options[i].value);
+                }
+            }
+
+            const data = currentType === "trait" 
+            ? { trait: AddName, device_feature: selectedValues }
+            : { dm: AddName, trait:selectedValues}
+
+            // 傳送到後端
+            send_data("SendData", data)
+                .then(response => {
+                console.log("[SendData_Success]", response); 
+                // 清空 input 欄位
+                resetSelects(currentType);
+
+                // 更新現有的Trait/DF
+                refreshExist(currentType);
+            })
+            .catch(error => {
+                console.error("[Success_Error]", error); 
+            });
+        }else if(AddName.trim() == ""){ 
+            alert("The name cannot be empty"); //命名為空白的情況
+        }else if ((currentType === "dm") && (AddName in Exit_Data) && !(AddName in Exist_DM)){ //DM中，若與IoTtalk DM命名重複，但不與VoiceTalk DM重複情況處理
+            alert(AddName + " is already in use in IoTtalk.");
+        }else{
+            alert(AddName + " is already in use ");  //DM中，與VoiceTalk DM重複情況處理                                            
+        } 
+      }
+    );
+ 
+    // send_data(): 傳送新建立的Trait(DM) 資料到後端
+    function send_data(url, data) {
+        return new Promise((resolve, reject) => {
+            $.getJSON({
+                url: url,
+                data: data,
+                success: function (response) {
+                    resolve(response);
+                },
+                error: function () {
+                    reject("[Error:send_data] Failed to get data from server");
+                }
+            });
+        });
+    }
+ 
+</script>
+{% endblock %}
+

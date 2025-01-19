@@ -1,0 +1,7 @@
+Trait,DeviceFeature
+Brightness,"['BrightnessAbsolute', 'BrightnessRelative']"
+FanSpeed,"['SetFanSpeed', 'SetFanSpeedRelative']"
+ColorSetting,['ColorAbsolute']
+OpenClose,"['OpenClose', 'OpenCloseRelative']"
+OnOff,['OnOff']
+LockUnlock,['LockUnlock']
