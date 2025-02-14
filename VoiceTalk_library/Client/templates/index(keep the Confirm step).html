@@ -579,6 +579,7 @@
     var selectASRtoolList = document.getElementById("selectASRtoolList"); // 語言選擇的下拉式選單
     var recognition;
     var microphone;
+    var after_recognition_flag = false
     //網頁上選項
     var startMessage = { "en-US": "Tap to start", "cmn-Hant-TW": "按此開始" }
     var stopMessage = { "en-US": "Tap to stop", "cmn-Hant-TW": "按此結束" }
@@ -924,8 +925,6 @@
             };
 
             recognition.onresult = function (event) { // 辨識有任何結果時
-                $("#recognitionBox").val(waitMessage[language]).addClass("gray-text");
-                toggleBan("block")
                 for (var i = event.resultIndex; i < event.results.length; ++i) { // 對於每一個辨識結果
                     if (event.results[i].isFinal) { // 如果是最終結果
                         final_transcript = event.results[i][0].transcript; // 將其加入最終結果中
@@ -943,16 +942,8 @@
                         data = { sentence: final_transcript }
                     ).then((response) => {
                         // 成功時處理
-                        corrected_sentence = response.corrected_sentence;
-                        // UserConfirmBox();
-                        $("#recognitionBox").removeClass("gray-text");
-                        $("#recognitionBox").val(corrected_sentence)
-                        $("#responseBox").val(waitMessage[language]).addClass("gray-text");
-                        toggleBan("block");
-                        process_sentence(
-                            url = "/ProcessSentence",
-                            data = { language: language, sentence: corrected_sentence, project_name: project_name }
-                        )
+                        corrected_sentence = response.corrected_sentence
+                        UserConfirmBox();
                     }).catch((error) => {
                         console.error("Error:", error);
                         alert("Failed to correct sentence.");
@@ -960,57 +951,56 @@
                 }
                 else {
                     $("#recognitionBox").val("");
-                    toggleBan("none");
                 }
             };
         }
     }
 
 
-    // function UserConfirmBox() {
-    //     toggleBan("block");
-    //     confirmModal.show();
-    //     $('#confirm-message').html(corrected_sentence)
+    function UserConfirmBox() {
+        toggleBan("block");
+        confirmModal.show();
+        $('#confirm-message').html(corrected_sentence)
 
-    // }
-    // // 當模態框隱藏時，隱藏ban圖片
-    // confirmElement.addEventListener('hide.bs.modal', () => {
-    //     toggleBan("none");
-    //     recognitionBox.value = "";
-    // });
+    }
+    // 當模態框隱藏時，隱藏ban圖片
+    confirmElement.addEventListener('hide.bs.modal', () => {
+        toggleBan("none");
+        recognitionBox.value = "";
+    });
 
-    // // 處理按鈕點擊
-    // correctBtn.addEventListener('click', () => {
-    //     console.log("coorctBtn click");
-    //     console.log(corrected_sentence);
-    //     console.log("*** ProcessSentence")
+    // 處理按鈕點擊
+    correctBtn.addEventListener('click', () => {
+        console.log("coorctBtn click");
+        console.log(corrected_sentence);
+        console.log("*** ProcessSentence")
 
-    //     process_sentence(
-    //         url = "/ProcessSentence",
-    //         data = { language: language, sentence: corrected_sentence, project_name: project_name }
-    //     )
-    //     confirmModal.hide();
-    //     $("#recognitionBox").removeClass("gray-text");
-    //     $("#recognitionBox").val(corrected_sentence)
-    //     $("#responseBox").val(waitMessage[language]).addClass("gray-text");
-    //     toggleBan("block");
-    // });
+        process_sentence(
+            url = "/ProcessSentence",
+            data = { language: language, sentence: corrected_sentence, project_name: project_name }
+        )
+        confirmModal.hide();
+        $("#recognitionBox").removeClass("gray-text");
+        $("#recognitionBox").val(corrected_sentence)
+        $("#responseBox").val(waitMessage[language]).addClass("gray-text");
+        toggleBan("block");
+    });
 
-    // editBtn.addEventListener('click', () => {
-    //     // 將辨識結果放到手動輸入欄位，讓使用者修改，再將 after_recognition_flag 設為 true
-    //     after_recognition_flag = true
-    //     wrong_sentence = corrected_sentence
-    //     confirmModal.hide();
-    //     toggleBan("block");
-    //     // 自動打開Typing畫面
-    //     $('#Modal_typing').modal('show');
-    //     $("#user_typing").val(corrected_sentence);
-    //     $("#typingLabel").html(editBtnMessage[language]);
-    // });
-    // // 當模態框隱藏時，隱藏ban圖片
-    // typingElement.addEventListener('hide.bs.modal', () => {
-    //     toggleBan("none");
-    // });
+    editBtn.addEventListener('click', () => {
+        // 將辨識結果放到手動輸入欄位，讓使用者修改，再將 after_recognition_flag 設為 true
+        after_recognition_flag = true
+        wrong_sentence = corrected_sentence
+        confirmModal.hide();
+        toggleBan("block");
+        // 自動打開Typing畫面
+        $('#Modal_typing').modal('show');
+        $("#user_typing").val(corrected_sentence);
+        $("#typingLabel").html(editBtnMessage[language]);
+    });
+    // 當模態框隱藏時，隱藏ban圖片
+    typingElement.addEventListener('hide.bs.modal', () => {
+        toggleBan("none");
+    });
 
     function sendToBackend() {
         console.log("sendToBackend")
@@ -1036,15 +1026,7 @@
                     ).then((response) => {
                         // 成功時處理
                         corrected_sentence = response.corrected_sentence
-                        // UserConfirmBox();
-                        $("#recognitionBox").removeClass("gray-text");
-                        $("#recognitionBox").val(corrected_sentence)
-                        $("#responseBox").val(waitMessage[language]).addClass("gray-text");
-                        toggleBan("block");
-                        process_sentence(
-                            url = "/ProcessSentence",
-                            data = { language: language, sentence: corrected_sentence, project_name: project_name }
-                        )
+                        UserConfirmBox();
                     }).catch((error) => {
                         console.error("Error:", error);
                         alert("Failed to correct sentence.");
@@ -1053,7 +1035,7 @@
                 else {
                     console.log("nothing");
                     $("#recognitionBox").val("");
-                    toggleBan("none");
+                    toggleBan("none")
                 }
             }
         }

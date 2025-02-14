@@ -311,14 +311,14 @@ def generate_command_and_response(sentence, language = "en-US", project_name = N
 
     return {'valid':valid, 'DeviceName': DeviceName, 'Trait':Trait, 'DeviceFeature': DeviceFeature, 'InputValue':extract_number(InputValue)}
 
-# def spellCorrection(sentence, language = "enUs"):
-#     if language == "enUS":
-#         df = pd.read_csv(config.get_correction_file_path("enUS"))
-#     else:
-#         df = pd.read_csv(config.get_correction_file_path("enUS"))
-#     for correctword, wrongword in zip(df["correct"], df["wrong"]):
-#         sentence = re.sub(rf"(?<!\S){re.escape(str(wrongword))}(?!\S)", str(correctword), sentence)
-#     return sentence
+def spellCorrection(sentence, language = "enUs"):
+    if language == "enUS":
+        df = pd.read_csv(config.get_correction_file_path("enUS"))
+    else:
+        df = pd.read_csv(config.get_correction_file_path("enUS"))
+    for correctword, wrongword in zip(df["correct"], df["wrong"]):
+        sentence = re.sub(rf"(?<!\S){re.escape(str(wrongword))}(?!\S)", str(correctword), sentence)
+    return sentence
 
 # levenshtein_distance_with_operations : 使用 levenshtein distance 演算法，計算兩個句子更改成相同的最少操作數與操作順序
 def levenshtein_distance_with_operations(s1, s2):
@@ -374,136 +374,136 @@ def levenshtein_distance_with_operations(s1, s2):
 # 4. 代號 轉回 token(device)
 # 5. 加入字典 (檢查要替換的字串是否為 Device 的 substring，若是的話，則不能加入字典)
 # ((要改 讀檔))
-# def need_to_add_dict(text1, text2, project_name, language = "enUs"):
-#     '''
-#     text1: ASR辨識結果句子
-#     text2: 用戶手動更正後句子
-#     '''    
-#     # 將句子去除逗號和句號，並轉為小寫
-#     text1 = re.sub(r'[.,]', '', text1.lower()).strip()
-#     text2 = re.sub(r'[.,]', '', text2.lower()).strip()
+def need_to_add_dict(text1, text2, project_name, language = "enUs"):
+    '''
+    text1: ASR辨識結果句子
+    text2: 用戶手動更正後句子
+    '''    
+    # 將句子去除逗號和句號，並轉為小寫
+    text1 = re.sub(r'[.,]', '', text1.lower()).strip()
+    text2 = re.sub(r'[.,]', '', text2.lower()).strip()
     
-#     def get_token_list(file, col_name):
-#         table = pd.read_csv(file)[col_name]
-#         table = table.dropna()
-#         token_list = set()
-#         for key in set(table):
-#             # if isinstance(key, str) and key.startswith("{") and key.endswith("}"):
-#             if isinstance(key, str) and key.startswith("[") and key.endswith("]"):
-#                 item_dict = ast.literal_eval(key)
-#                 for k in item_dict:
-#                     token_list.add(k[0])
-#             else:
-#                 token_list.add(key)
-#         return list(token_list)
+    def get_token_list(file, col_name):
+        table = pd.read_csv(file)[col_name]
+        table = table.dropna()
+        token_list = set()
+        for key in set(table):
+            # if isinstance(key, str) and key.startswith("{") and key.endswith("}"):
+            if isinstance(key, str) and key.startswith("[") and key.endswith("]"):
+                item_dict = ast.literal_eval(key)
+                for k in item_dict:
+                    token_list.add(k[0])
+            else:
+                token_list.add(key)
+        return list(token_list)
     
-#     print(text1, "-->", text2)
+    print(text1, "-->", text2)
 
-#     # Step 1 : token 轉為代號
-#     # 建立TokenTable中的代號字典，D從「設備+編號」轉為「序數+設備」
-#     if language == "enUs":
-#         database_path = config.get_project_database_path(project_name, "enUS")
-#     else:
-#         database_path = config.get_project_database_path(project_name, "enUS")
+    # Step 1 : token 轉為代號
+    # 建立TokenTable中的代號字典，D從「設備+編號」轉為「序數+設備」
+    if language == "enUs":
+        database_path = config.get_project_database_path(project_name, "enUS")
+    else:
+        database_path = config.get_project_database_path(project_name, "enUS")
         
-#     token_D = get_token_list(database_path, "DeviceName")
-#     # token_D = [device_name_to_ordinal(d) for d in token_D]
+    token_D = get_token_list(database_path, "DeviceName")
+    # token_D = [device_name_to_ordinal(d) for d in token_D]
     
-#     token_A = get_token_list(database_path, "Trait")
-#     token_V = get_token_list(database_path, "MappingList")
+    token_A = get_token_list(database_path, "Trait")
+    token_V = get_token_list(database_path, "MappingList")
 
-#     token_list = []
-#     token_list.extend(token_D)
-#     token_list.extend(token_A)
-#     token_list.extend(token_V)
-#     token_dict = {}
-#     for i, key in enumerate(set(token_list), start=1):
-#         value = f"_token{i}_"
-#         token_dict[key] = value
+    token_list = []
+    token_list.extend(token_D)
+    token_list.extend(token_A)
+    token_list.extend(token_V)
+    token_dict = {}
+    for i, key in enumerate(set(token_list), start=1):
+        value = f"_token{i}_"
+        token_dict[key] = value
 
-#     for key, value in token_dict.items():
-#         # text1 = text1.replace(key, value)
-#         # text2 = text2.replace(key, value)
-#         text1 = re.sub(r"\b" + str(key) + r"\b", str(value), text1)
-#         text2 = re.sub(r"\b" + str(key) + r"\b", str(value), text2)
+    for key, value in token_dict.items():
+        # text1 = text1.replace(key, value)
+        # text2 = text2.replace(key, value)
+        text1 = re.sub(r"\b" + str(key) + r"\b", str(value), text1)
+        text2 = re.sub(r"\b" + str(key) + r"\b", str(value), text2)
 
 
-#     # Step 2 : 跑 levenshtein_distance_with_operations 得 編輯距離 與 編輯操作說明
-#     distance, operations = levenshtein_distance_with_operations(text1, text2)
+    # Step 2 : 跑 levenshtein_distance_with_operations 得 編輯距離 與 編輯操作說明
+    distance, operations = levenshtein_distance_with_operations(text1, text2)
 
-#     # Step 3 : 以 MATCH 作為間隔，把相同間隔的 REPLACE 與 DELETE 組成一組，若有INSERT則加入right部分
-#     operations.append(("MATCH", "", ""))
-#     wrong, right = "", ""
-#     ans_list = []
-#     for diff_type, change_text, add_text in operations:
-#         if diff_type == "SUBSTITUTION":
-#             wrong  += ' '+change_text
-#             right  += ' '+add_text
-#         elif diff_type == "DELETION":
-#             wrong  += ' '+change_text
-#         elif diff_type == "INSERTION":
-#             right += ' ' + change_text
-#         else:
-#             if wrong and right:
-#                 ans_list.append((wrong.strip(), right.strip()))
-#                 wrong, right = "", ""
+    # Step 3 : 以 MATCH 作為間隔，把相同間隔的 REPLACE 與 DELETE 組成一組，若有INSERT則加入right部分
+    operations.append(("MATCH", "", ""))
+    wrong, right = "", ""
+    ans_list = []
+    for diff_type, change_text, add_text in operations:
+        if diff_type == "SUBSTITUTION":
+            wrong  += ' '+change_text
+            right  += ' '+add_text
+        elif diff_type == "DELETION":
+            wrong  += ' '+change_text
+        elif diff_type == "INSERTION":
+            right += ' ' + change_text
+        else:
+            if wrong and right:
+                ans_list.append((wrong.strip(), right.strip()))
+                wrong, right = "", ""
 
-#     # Step 4 : 代號 轉回 token
-#     # trans_dict_D = {v : k for k, v in dict_D.items()}
-#     trans_token_dict = {v : k for k, v in token_dict.items()}
-#     print("ans_list:", ans_list)
-#     print("--------------------")
+    # Step 4 : 代號 轉回 token
+    # trans_dict_D = {v : k for k, v in dict_D.items()}
+    trans_token_dict = {v : k for k, v in token_dict.items()}
+    print("ans_list:", ans_list)
+    print("--------------------")
     
-#     added_list = []
-#     for t in ans_list:
-#         wrong = t[0]
-#         right = t[1]
-#         # Step 5 : 加入字典
-#         # 檢查 1. 修正前的字串不是 VoiceTalk 的 token，避免錯誤替換其他情境中的token。
-#         # 檢查 2. 修正後的字串是 VoiceTalk 的 token，則要檢查修正前的字串是否為 Device 的 substring，若不是的話再加入字典。
-#         add_flag = True
-#         for token in trans_token_dict.keys():
-#             if token in right.split(" "):
-#                 if (len(wrong.split(" "))==1) and (any(item in trans_token_dict[token] for item in wrong.split(" "))):
-#                     add_flag = False
-#             elif (len(wrong.split(" ")) == 1) and ((token in wrong.split(" ")) or all(i.isdigit() for i in wrong.split(" "))):
-#                 add_flag = False
+    added_list = []
+    for t in ans_list:
+        wrong = t[0]
+        right = t[1]
+        # Step 5 : 加入字典
+        # 檢查 1. 修正前的字串不是 VoiceTalk 的 token，避免錯誤替換其他情境中的token。
+        # 檢查 2. 修正後的字串是 VoiceTalk 的 token，則要檢查修正前的字串是否為 Device 的 substring，若不是的話再加入字典。
+        add_flag = True
+        for token in trans_token_dict.keys():
+            if token in right.split(" "):
+                if (len(wrong.split(" "))==1) and (any(item in trans_token_dict[token] for item in wrong.split(" "))):
+                    add_flag = False
+            elif (len(wrong.split(" ")) == 1) and ((token in wrong.split(" ")) or all(i.isdigit() for i in wrong.split(" "))):
+                add_flag = False
 
-#         if add_flag:
-#             # 嘗試把代號轉回英文
-#             wrong = trans_token_dict.get(t[0], t[0])
-#             right = trans_token_dict.get(t[1], t[1])
+        if add_flag:
+            # 嘗試把代號轉回英文
+            wrong = trans_token_dict.get(t[0], t[0])
+            right = trans_token_dict.get(t[1], t[1])
             
-#             for key, value in trans_token_dict.items(): 
-#                 wrong = re.sub(r'[.,]', '', wrong.replace(key, value)).strip()
-#                 right = re.sub(r'[.,]', '', right.replace(key, value)).strip()
-#             print("加入字典:", wrong, "->", right)
-#             # added_list.append([wrong, right])
-#             added_list.append([right, wrong])
+            for key, value in trans_token_dict.items(): 
+                wrong = re.sub(r'[.,]', '', wrong.replace(key, value)).strip()
+                right = re.sub(r'[.,]', '', right.replace(key, value)).strip()
+            print("加入字典:", wrong, "->", right)
+            # added_list.append([wrong, right])
+            added_list.append([right, wrong])
 
-#     return added_list
+    return added_list
 
-# def append_to_correction_csv(new_data, language = "enUs"):
-#     # 將嵌套列表轉為 DataFrame
-#     new_df = pd.DataFrame(new_data, columns=["correct", "wrong"])
-#     try:
-#         # 嘗試讀取現有的 CSV 檔案
-#         if language == "enUS":
-#             file_path = config.get_correction_file_path("enUS")
-#         else:
-#             file_path = config.get_correction_file_path("enUS")
-#         existing_df = pd.read_csv(file_path)
+def append_to_correction_csv(new_data, language = "enUs"):
+    # 將嵌套列表轉為 DataFrame
+    new_df = pd.DataFrame(new_data, columns=["correct", "wrong"])
+    try:
+        # 嘗試讀取現有的 CSV 檔案
+        if language == "enUS":
+            file_path = config.get_correction_file_path("enUS")
+        else:
+            file_path = config.get_correction_file_path("enUS")
+        existing_df = pd.read_csv(file_path)
         
-#         # 合併新資料到現有資料
-#         updated_df = pd.concat([existing_df, new_df], ignore_index=True)
-#         print(f"adding correction dict:{new_df}")
-#     except FileNotFoundError:
-#         # 如果檔案不存在，直接使用新資料
-#         updated_df = new_df
+        # 合併新資料到現有資料
+        updated_df = pd.concat([existing_df, new_df], ignore_index=True)
+        print(f"adding correction dict:{new_df}")
+    except FileNotFoundError:
+        # 如果檔案不存在，直接使用新資料
+        updated_df = new_df
 
-#     # 去除重複資料，並保存回檔案
-#     updated_df.drop_duplicates(inplace=True)
-#     updated_df.to_csv(file_path, index=False)
+    # 去除重複資料，並保存回檔案
+    updated_df.drop_duplicates(inplace=True)
+    updated_df.to_csv(file_path, index=False)
 
 
 # define error message format:
@@ -633,7 +633,7 @@ def SentenceCorrection():
     language = request.args.get('language')
     sc = promptSC()
     corrected_sentence = sc.main(sentence)
-    # corrected_sentence = spellCorrection(corrected_sentence, language)
+    corrected_sentence = spellCorrection(corrected_sentence, language)
     
     return {'corrected_sentence': corrected_sentence}
 
@@ -675,10 +675,12 @@ def ManualTyping():
     response_json = generate_command_and_response(sentence = corrected_sentence, language = language, project_name = project_name)
 
     # 將 corrected_sentence 送到 USnlp 處理，若有成功控制設備再考慮是否要加入字典檔。
-    # if response_json["valid"] > 0 and after_recognition_flag:
-    #     correct_pair = need_to_add_dict(wrong_sentence, corrected_sentence, project_name, language)
-    #     if correct_pair:
-    #         append_to_correction_csv(correct_pair, language)
+    if response_json["valid"] > 0 and after_recognition_flag:
+        # print("*-*-*-*-* 要加入字典")。
+        # wrong_sentence = spellCorrection(wrong_sentence, language)
+        correct_pair = need_to_add_dict(wrong_sentence, corrected_sentence, project_name, language)
+        if correct_pair:
+            append_to_correction_csv(correct_pair, language)
 
     return jsonify(response_json)
 
