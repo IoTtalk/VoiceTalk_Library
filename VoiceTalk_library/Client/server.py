@@ -11,6 +11,7 @@ importlib.reload(config)
 
 import whisper
 import subprocess
+from Llama_API import LlamaAPI
 from GPT_API import promptSC, promptCG
 
 import time
@@ -27,6 +28,9 @@ import csmapi, ccm_utils
 
 # whisper 相關參數
 model = whisper.load_model("base", download_root = "./whisper_model_download")
+
+# Llama 相關參數
+api = LlamaAPI()
 
 # 定義一個保存 device 資訊的資料結構，讓 voicetalk 可以控制 device。
 project_devices_info = dict()
@@ -267,12 +271,17 @@ def extract_number(value):
 
 # (要改)
 def generate_command_and_response(sentence, language = "en-US", project_name = None):
+    global api
     DAV_json = None
     if sentence != "":
-        print("送進 GPT 的句子:", sentence)
+        # print("送進 GPT 的句子:", sentence)
         # 取得 GPT 回覆，DAV_json 為 dict('DeviceName', 'DeviceType', 'DeviceFeature', 'InputValue') 或是 None
-        cg = promptCG()
-        DAV_json = cg.main(project_name, sentence)
+        # cg = promptCG()
+        # DAV_json = cg.main(project_name, sentence)
+        
+        print("送進 LLM 的句子:", sentence)
+        # 取得 Llama 回覆，DAV_json 為 dict('DeviceName', 'DeviceType', 'DeviceFeature', 'InputValue')或是 None
+        DAV_json = api.main("CG", sentence, project_name)
 
         # print("GPT Response:", gpt_response)
         print("\n\n\nGPT JSON Output:", DAV_json)
@@ -629,10 +638,17 @@ def home():
 
 @app.route('/SentenceCorrection', methods = ['POST','GET'])
 def SentenceCorrection():
+    global api
     sentence = request.args.get('sentence')
     language = request.args.get('language')
-    sc = promptSC()
-    corrected_sentence = sc.main(sentence)
+    # GPT
+    # sc = promptSC()
+    # corrected_sentence = sc.main(sentence)
+
+    # Llama API 回傳為一json，取key為sentence的值，若無則回傳原句
+    response_json = api.main("SC", sentence)
+    corrected_sentence = response_json.get("sentence",sentence)
+
     # corrected_sentence = spellCorrection(corrected_sentence, language)
     
     return {'corrected_sentence': corrected_sentence}
