@@ -12,7 +12,7 @@ SERVER_URL = "https://vt.iottalk.tw/"
 GUI_SERVER_URL = "http://vt.iottalk.tw:7788/"
 
 Dia_API_key = '../DB/Dialogflow_test1.json'
-Dia_project_id = "***REMOVED***"
+Dia_project_id = "test1-cidr"
 STT_client_file = "../DB/stt-demo20241130"
 
 Port = 10826

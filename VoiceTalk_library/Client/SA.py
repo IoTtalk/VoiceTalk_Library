@@ -23,10 +23,8 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         received_json = json.loads(received_data)
         idf = received_json["attribute"]
         data = received_json["value"]
-
         data_list = IDF_data_list[df_func_name(idf)]
         data_list.append(data)
-
         # Depending on the device, determine whether you need to send a response back to voicetalk after receiving a message.
         # self.request.sendall(f"{device_name} response!!!".encode("utf-8"))
 
