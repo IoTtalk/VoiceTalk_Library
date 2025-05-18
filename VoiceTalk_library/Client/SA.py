@@ -10,7 +10,7 @@ socket_addr = './temp'
 
 IDF_data_list = dict()
 
-# Define a class that inherits from `socketserver.BaseRequestHandler and override the `handle(self)` method. The `handle()` method will be executed when a message is received from a client.
+# Define a class that inherits from `socketserver.BaseRequestHandler` and override the `handle(self)` method. The `handle()` method will be executed when a message is received from a client.
 # If there is a need to initialize variables, you can override the `setup(self)` method.
 # After receiving the JSON sent from the voicetalk server, extract the data to be pushed and place it into the corresponding IDF list in the global variable.
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
