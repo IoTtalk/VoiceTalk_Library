@@ -7,7 +7,6 @@ device_id = '<HomeAppliance_uuid>'
 device_name = '<HomeAppliance_name>' # for example: 'first light'
 exec_interval = 1  # IDF execution interval
 socket_addr = './temp'
-
 IDF_data_list = dict()
 
 # Define a class that inherits from `socketserver.BaseRequestHandler` and override the `handle(self)` method. The `handle()` method will be executed when a message is received from a client.
