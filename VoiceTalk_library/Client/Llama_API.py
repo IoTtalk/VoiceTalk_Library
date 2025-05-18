@@ -11,7 +11,7 @@ importlib.reload(config)
 
 class LlamaAPI:
     def __init__(self):
-        self.api_url = "http://140.113.61.159:32177/chat"
+        self.api_url = ""
     
     def main(self, method, text, project_name=None):
         self.project_name = project_name

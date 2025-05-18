@@ -6,18 +6,11 @@ import threading
 import os
 import re
 
-ServerURL = 'https://class.iottalk.tw/' #For example: 'https://DomainName'
-MQTT_broker = None # MQTT Broker address, for example: 'DomainName' or None = no MQTT support
-MQTT_port = 1883
-MQTT_encryption = False
-MQTT_User = 'ID'
-MQTT_PW = 'PW'
-
-device_model = 'Dummy_Device'
-IDF_list = ['Dummy_Sensor']
-ODF_list = ['Dummy_Control']
-device_id = 'testsubprocess_3'
-device_name = 'testsubprocess_3'
+ServerURL = 'https://IoTtalk Domain Name'
+device_model = 'HomeAppliance_model_name' # for example: 'LIGHT'
+IDF_list = ['HomeAppliance_IDF']
+device_id = 'HomeAppliance_uuid'
+device_name = 'HomeAppliance_name' # for example: 'first light'
 exec_interval = 1  # IDF/ODF interval
 socket_addr = './temp'
 
@@ -50,18 +43,18 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.UnixStreamServ
     allow_reuse_address = True
 
 # IDF 範例，全域變數的對應 IDF list 中取得並回傳資料，回傳 None 的話 DAN 也不會 push。
-def Dummy_Sensor():
+def HomeAppliance_IDF():
     global IDF_data_list
     try:
-        data_list = IDF_data_list["Dummy_Sensor"]
+        data_list = IDF_data_list["HomeAppliance_IDF"]
         # 若 data_list 有資料就回傳，使用 pop(0) 會從 list 的頭開始拿
         if data_list:
             return data_list.pop(0)
     except:
         return None
 
-def Dummy_Control(data:list):
-    print(data[0])
+# def Dummy_Control(data:list):
+#     print(data[0])
 
 def df_func_name(df_name):
     return re.sub(r'-', r'_', df_name)

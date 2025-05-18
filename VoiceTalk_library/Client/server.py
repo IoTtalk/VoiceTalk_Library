@@ -112,7 +112,6 @@ def modify_template(template, device_info):
         "device_name": f"'{device_name}'",
         "device_id": f"'{device_id}'",
         "IDF_list": f"{IDF_list}",
-        "ODF_list": "[]",
         "exec_interval": f"{exec_interval}",
         "socket_addr": f"'{socket_addr}'",
     }
@@ -269,12 +268,10 @@ def extract_number(value):
         # 如果轉換失敗，回傳 None
         return None
 
-# (要改)
 def generate_command_and_response(sentence, language = "en-US", project_name = None):
     global api
     DAV_json = None
     if sentence != "":
-        # print("送進 GPT 的句子:", sentence)
         # 取得 GPT 回覆，DAV_json 為 dict('DeviceName', 'DeviceType', 'DeviceFeature', 'InputValue') 或是 None
         # cg = promptCG()
         # DAV_json = cg.main(project_name, sentence)
@@ -286,7 +283,7 @@ def generate_command_and_response(sentence, language = "en-US", project_name = N
         # print("GPT Response:", gpt_response)
         print("\n\n\nGPT JSON Output:", DAV_json)
     else:
-        print("!!!***!!! empty sentance !!!***!!!")
+        print("empty sentance!!!")
     
     valid = -1
     DeviceName = None
@@ -320,212 +317,8 @@ def generate_command_and_response(sentence, language = "en-US", project_name = N
 
     return {'valid':valid, 'DeviceName': DeviceName, 'Trait':Trait, 'DeviceFeature': DeviceFeature, 'InputValue':extract_number(InputValue)}
 
-# def spellCorrection(sentence, language = "enUs"):
-#     if language == "enUS":
-#         df = pd.read_csv(config.get_correction_file_path("enUS"))
-#     else:
-#         df = pd.read_csv(config.get_correction_file_path("enUS"))
-#     for correctword, wrongword in zip(df["correct"], df["wrong"]):
-#         sentence = re.sub(rf"(?<!\S){re.escape(str(wrongword))}(?!\S)", str(correctword), sentence)
-#     return sentence
-
-# levenshtein_distance_with_operations : 使用 levenshtein distance 演算法，計算兩個句子更改成相同的最少操作數與操作順序
-def levenshtein_distance_with_operations(s1, s2):
-    # 句子分詞
-    words1 = s1.split()
-    words2 = s2.split()
-
-    # 建立一個二維數組，用於儲存部分編輯距離的值 (m + 1) * (n + 1)
-    matrix = [[0] * (len(words2) + 1) for _ in range(len(words1) + 1)]
-
-    # 初始化第一行和第一列，行與列都從 0 開始遞增
-    for i in range(len(words1) + 1):
-        matrix[i][0] = i
-    for j in range(len(words2) + 1):
-        matrix[0][j] = j
-
-    # 用於儲存編輯操作的列表，儲存到當下這個位置的最小距離，以及執行操作的順序
-    operations = [[[] for _ in range(len(words2) + 1)] for _ in range(len(words1) + 1)]
-
-    # 開始填充矩陣中的其他單元格
-    for i in range(1, len(words1) + 1):
-        for j in range(1, len(words2) + 1):
-            # 若 words1 的第 i 個字與 words2 的第 j 個字相同，cost 為 0，反之 cost = 1
-            cost = 0 if words1[i - 1] == words2[j - 1] else 1
-            delete_cost = matrix[i-1][j] + 1
-            insert_cost = matrix[i][j-1] + 1
-            replace_cost = matrix[i-1][j-1] + cost
-            
-            # 根據編輯操作的最小成本更新矩陣值和操作列表
-            if delete_cost <= insert_cost and delete_cost <= replace_cost:
-                matrix[i][j] = delete_cost
-                operations[i][j] = operations[i-1][j] + [('DELETION', words1[i-1], '')]
-            elif insert_cost <= delete_cost and insert_cost <= replace_cost:
-                matrix[i][j] = insert_cost
-                operations[i][j] = operations[i][j-1] + [('INSERTION', words2[j-1], '')]
-            else:
-                matrix[i][j] = replace_cost
-                if cost == 1:
-                    operations[i][j] = operations[i-1][j-1] + [('SUBSTITUTION', words1[i-1], words2[j-1])]
-                else:
-                    operations[i][j] = operations[i-1][j-1] + [('MATCH', words1[i-1], '')]
-
-    # 最後一個單元格的值即為Levenshtein距離
-    distance = matrix[len(words1)][len(words2)]
-    # 最後一個單元格的操作列表即為編輯操作
-    edit_operations = operations[len(words1)][len(words2)]
-    return distance, edit_operations
-
-# need_to_add_dict : 找出兩個句子是否不同，並且找出將錯誤字串替換成正確字串的詞組
-# 1. token(device) 轉為代號
-# 2. 跑 levenshtein_distance_with_operations 得 編輯距離 與 編輯操作說明
-# 3. 以 MATCH 作為間隔，把相同間隔的 REPLACE 與 DELETE 組成一組，若有INSERTION則加入right部分
-# 4. 代號 轉回 token(device)
-# 5. 加入字典 (檢查要替換的字串是否為 Device 的 substring，若是的話，則不能加入字典)
-# ((要改 讀檔))
-# def need_to_add_dict(text1, text2, project_name, language = "enUs"):
-#     '''
-#     text1: ASR辨識結果句子
-#     text2: 用戶手動更正後句子
-#     '''    
-#     # 將句子去除逗號和句號，並轉為小寫
-#     text1 = re.sub(r'[.,]', '', text1.lower()).strip()
-#     text2 = re.sub(r'[.,]', '', text2.lower()).strip()
-    
-#     def get_token_list(file, col_name):
-#         table = pd.read_csv(file)[col_name]
-#         table = table.dropna()
-#         token_list = set()
-#         for key in set(table):
-#             # if isinstance(key, str) and key.startswith("{") and key.endswith("}"):
-#             if isinstance(key, str) and key.startswith("[") and key.endswith("]"):
-#                 item_dict = ast.literal_eval(key)
-#                 for k in item_dict:
-#                     token_list.add(k[0])
-#             else:
-#                 token_list.add(key)
-#         return list(token_list)
-    
-#     print(text1, "-->", text2)
-
-#     # Step 1 : token 轉為代號
-#     # 建立TokenTable中的代號字典，D從「設備+編號」轉為「序數+設備」
-#     if language == "enUs":
-#         database_path = config.get_project_database_path(project_name, "enUS")
-#     else:
-#         database_path = config.get_project_database_path(project_name, "enUS")
-        
-#     token_D = get_token_list(database_path, "DeviceName")
-#     # token_D = [device_name_to_ordinal(d) for d in token_D]
-    
-#     token_A = get_token_list(database_path, "Trait")
-#     token_V = get_token_list(database_path, "MappingList")
-
-#     token_list = []
-#     token_list.extend(token_D)
-#     token_list.extend(token_A)
-#     token_list.extend(token_V)
-#     token_dict = {}
-#     for i, key in enumerate(set(token_list), start=1):
-#         value = f"_token{i}_"
-#         token_dict[key] = value
-
-#     for key, value in token_dict.items():
-#         # text1 = text1.replace(key, value)
-#         # text2 = text2.replace(key, value)
-#         text1 = re.sub(r"\b" + str(key) + r"\b", str(value), text1)
-#         text2 = re.sub(r"\b" + str(key) + r"\b", str(value), text2)
-
-
-#     # Step 2 : 跑 levenshtein_distance_with_operations 得 編輯距離 與 編輯操作說明
-#     distance, operations = levenshtein_distance_with_operations(text1, text2)
-
-#     # Step 3 : 以 MATCH 作為間隔，把相同間隔的 REPLACE 與 DELETE 組成一組，若有INSERT則加入right部分
-#     operations.append(("MATCH", "", ""))
-#     wrong, right = "", ""
-#     ans_list = []
-#     for diff_type, change_text, add_text in operations:
-#         if diff_type == "SUBSTITUTION":
-#             wrong  += ' '+change_text
-#             right  += ' '+add_text
-#         elif diff_type == "DELETION":
-#             wrong  += ' '+change_text
-#         elif diff_type == "INSERTION":
-#             right += ' ' + change_text
-#         else:
-#             if wrong and right:
-#                 ans_list.append((wrong.strip(), right.strip()))
-#                 wrong, right = "", ""
-
-#     # Step 4 : 代號 轉回 token
-#     # trans_dict_D = {v : k for k, v in dict_D.items()}
-#     trans_token_dict = {v : k for k, v in token_dict.items()}
-#     print("ans_list:", ans_list)
-#     print("--------------------")
-    
-#     added_list = []
-#     for t in ans_list:
-#         wrong = t[0]
-#         right = t[1]
-#         # Step 5 : 加入字典
-#         # 檢查 1. 修正前的字串不是 VoiceTalk 的 token，避免錯誤替換其他情境中的token。
-#         # 檢查 2. 修正後的字串是 VoiceTalk 的 token，則要檢查修正前的字串是否為 Device 的 substring，若不是的話再加入字典。
-#         add_flag = True
-#         for token in trans_token_dict.keys():
-#             if token in right.split(" "):
-#                 if (len(wrong.split(" "))==1) and (any(item in trans_token_dict[token] for item in wrong.split(" "))):
-#                     add_flag = False
-#             elif (len(wrong.split(" ")) == 1) and ((token in wrong.split(" ")) or all(i.isdigit() for i in wrong.split(" "))):
-#                 add_flag = False
-
-#         if add_flag:
-#             # 嘗試把代號轉回英文
-#             wrong = trans_token_dict.get(t[0], t[0])
-#             right = trans_token_dict.get(t[1], t[1])
-            
-#             for key, value in trans_token_dict.items(): 
-#                 wrong = re.sub(r'[.,]', '', wrong.replace(key, value)).strip()
-#                 right = re.sub(r'[.,]', '', right.replace(key, value)).strip()
-#             print("加入字典:", wrong, "->", right)
-#             # added_list.append([wrong, right])
-#             added_list.append([right, wrong])
-
-#     return added_list
-
-# def append_to_correction_csv(new_data, language = "enUs"):
-#     # 將嵌套列表轉為 DataFrame
-#     new_df = pd.DataFrame(new_data, columns=["correct", "wrong"])
-#     try:
-#         # 嘗試讀取現有的 CSV 檔案
-#         if language == "enUS":
-#             file_path = config.get_correction_file_path("enUS")
-#         else:
-#             file_path = config.get_correction_file_path("enUS")
-#         existing_df = pd.read_csv(file_path)
-        
-#         # 合併新資料到現有資料
-#         updated_df = pd.concat([existing_df, new_df], ignore_index=True)
-#         print(f"adding correction dict:{new_df}")
-#     except FileNotFoundError:
-#         # 如果檔案不存在，直接使用新資料
-#         updated_df = new_df
-
-#     # 去除重複資料，並保存回檔案
-#     updated_df.drop_duplicates(inplace=True)
-#     updated_df.to_csv(file_path, index=False)
-
-
-# define error message format:
-# 1: rule1, 2: rule2, <0: error
-# -2 error: no device in sentence
-# -3 error: no device feature in sentence
-# -4 error: device feature need value
-# -5 error: D not support F
-# -6 error: sentence grammar error(order required)
-
-####[1/16佩萱新增]VoiceTalk畫面所用到的function
-
-# 取得vt.iottalk中，同時存在於IDF與ODF中的Device Feature
+#### VoiceTalk 畫面所用到的 function
+# 取得 iottalk 中，同時存在於 IDF 與 ODF 中的 Device Feature
 def get_dflist():
     idf_list = [idf['df_name'] for idf in ccm_utils.get_devicefeature_list()[1]["input"]]
     odf_list = [odf['df_name'] for odf in ccm_utils.get_devicefeature_list()[1]["output"]]
@@ -534,7 +327,7 @@ def get_dflist():
     DF_LIST = list(set(idf_base) & set(odf_base))
     return sorted(DF_LIST)
     
-# 要建立DM的資料：dm_ingo
+# 要建立 DM 的資料：dm_info
 def create_dm_info(new_data):
     traitdf = pd.read_csv(config.get_trait_management_path("enUS"), dtype={'Trait': 'string', 'DeviceFeature': 'string'})
     traitdf['DeviceFeature'] = traitdf['DeviceFeature'].apply(ast.literal_eval)
@@ -564,33 +357,31 @@ def create_dm_info(new_data):
             })
     return dm_info
 
-####[1/16佩萱新增 end]
-
-#==========flask as backend=============
+#========== flask as backend =============
 from flask import Flask, render_template, request, jsonify, url_for, redirect
 app = Flask(__name__)
 
-####[1/16佩萱新增]
 # VoiceTalk Management:主畫面
 @app.route('/VoiceTalkManagement',methods=['POST','GET']) 
 def index_iottalk():
-
     return render_template("VT_Management.html")
-# VoiceTalk Management:更新Device Feature
+
+# VoiceTalk Management:更新 Device Feature
 @app.route('/UpdateDF')
 def update_df():
     DF_LIST = sorted(get_dflist())
     return jsonify({"DF_list": DF_LIST})
-# VoiceTalk Management:更新Trait
+
+# VoiceTalk Management:更新 Trait
 @app.route('/UpdateTrait')
 def update_trait():
-    # Trait Managemnet的Trait內容
+    # Trait Managemnet 的 Trait 內容
     df = pd.read_csv(config.get_trait_management_path("enUS"), dtype={'Trait': 'string', 'DeviceFeature': 'string'})
     df_sorted = df.sort_values(by='Trait')
     Exist_Trait = df_sorted.set_index('Trait')['DeviceFeature'].to_dict()
-    
     return jsonify(Exist_Trait=Exist_Trait)
-# VoiceTalk Management:更新DeviceModel
+
+# VoiceTalk Management:更新 DeviceModel
 @app.route('/UpdateDM')
 def update_DM():
     # DM Managemnet的DM
@@ -599,10 +390,10 @@ def update_DM():
     dm_list = [dm['dm_name'] for dm in ccm_utils.get_devicemodel_list()[1]]
     # vt.iottalk全部的DM
     IoTtalk_DM = {key: "" for key in dm_list}
-
     return jsonify(Exist_DM=Exist_DM, IoTtalk_DM=IoTtalk_DM)
-# VoiceTalk Management:接收前端送來的資料並存到DB
-# 新資料是DM的話：會用CCM在vt.iottalk建立DM
+
+# VoiceTalk Management:接收前端送來的資料並存到 DB
+# 新資料是 DM 的話：會用 CCM 在 iottalk 建立 DM
 @app.route('/SendData', methods = ['POST','GET'])
 def SendData():
     try:
@@ -629,11 +420,10 @@ def SendData():
             return jsonify({"trait": trait, "status": "true"})
     except:
         return jsonify({"error": "Error"}), 400  # 如果 'trait' 不存在，返回錯誤
-####[1/16佩萱新增 end]
-
+    
 @app.route('/',methods=['POST','GET']) 
 def home():
-    # 目前根目錄沒有東西要做，所以直接跳轉到 /VoiceTalkManagement
+    # 目前根目錄沒有事情要做，所以直接跳轉到 /VoiceTalkManagement
     return redirect(url_for('index_iottalk'))
 
 @app.route('/SentenceCorrection', methods = ['POST','GET'])
@@ -648,8 +438,6 @@ def SentenceCorrection():
     # Llama API 回傳為一json，取key為sentence的值，若無則回傳原句
     response_json = api.main("SC", sentence)
     corrected_sentence = response_json.get("sentence",sentence)
-
-    # corrected_sentence = spellCorrection(corrected_sentence, language)
     
     return {'corrected_sentence': corrected_sentence}
 
@@ -676,25 +464,17 @@ def ManualTyping():
     project_name = request.form["project_name"]
     corrected_sentence = request.form['corrected_sentence']
     wrong_sentence = request.form['wrong_sentence']
-    # after_recognition_flag 只在使用 ASR 辨識後才會是 True，可以多一層條件確保使用者是要修改 ASR 錯誤，並新增 spellCorrection 字典
+    # after_recognition_flag 只在使用 ASR 辨識後才會是 True，可以多一層條件確保使用者是要修改 ASR 錯誤
     after_recognition_flag = json.loads(request.form['after_recognition_flag'].lower())
 
     print("corrected_sentence:", corrected_sentence)
     print("wrong_sentence:", wrong_sentence)
     print("after_recognition_flag:", after_recognition_flag)
     
-    # text = request.values['user']
     print("[sentence]:",corrected_sentence)
     language = 'en-US'
     language = request.form['language']
-
     response_json = generate_command_and_response(sentence = corrected_sentence, language = language, project_name = project_name)
-
-    # 將 corrected_sentence 送到 USnlp 處理，若有成功控制設備再考慮是否要加入字典檔。
-    # if response_json["valid"] > 0 and after_recognition_flag:
-    #     correct_pair = need_to_add_dict(wrong_sentence, corrected_sentence, project_name, language)
-    #     if correct_pair:
-    #         append_to_correction_csv(correct_pair, language)
 
     return jsonify(response_json)
 
@@ -707,7 +487,6 @@ def save():
         file.save(org_file_path + "/" + file_name)
 
         # 轉換為單聲道音檔
-        # output_wav =os.path.join(app.instance_path, 'DialogFlow_mono')+'/'+ str(max_index + 1) + ".wav"
         output_wav = path + "/" + file_name
         ffmpeg_command = [
                 "ffmpeg",
@@ -754,6 +533,12 @@ def save():
 def voice_control_generator(project_name):
     global project_devices_info
     global feature_to_trait
+    
+    # 先檢查 project 是否存在
+    status, project_info = ccm_utils.get_project(project_name)
+    if status == False:
+        return f"project({project_name}) does not exist."
+    
     # 先清除原本 project 中的 input device，以及所有的 join function
     clear_input_device(project_name)
     # 清除 voicetalk 控制的 project devices
@@ -763,6 +548,11 @@ def voice_control_generator(project_name):
             p = device_control_info[device]["process"]
             p.terminate()
         del project_devices_info[project_name]
+        
+    # 檢查 output device 是否存在
+    if project_info["odo"] == []:
+        return f"There is no output device in the project({project_name})."
+
     # 1. 讀取 project 資料，取得 output device 資料。
     # 2. 根據 output device，使用 ccmapi 建立 input device。
     # 3. 自動連線。
@@ -771,7 +561,7 @@ def voice_control_generator(project_name):
 
     # 1. ~ 2.
     # 取得 project 資料，讀取 output device 資訊，並記錄 input device 需要資訊。
-    status, project_info = ccm_utils.get_project(project_name)
+#     status, project_info = ccm_utils.get_project(project_name)
     p_id = project_info["p_id"]
     input_device_list = []
     for odo in project_info["odo"]:
