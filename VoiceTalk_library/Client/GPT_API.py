@@ -9,7 +9,7 @@ import importlib
 import config
 importlib.reload(config)
 
-os.environ['OPENAI_API_KEY'] = ""
+os.environ['OPENAI_API_KEY'] = config.GPT_API_Key
 class promptSC():
     def __init__(self):
         self.input_text = ""

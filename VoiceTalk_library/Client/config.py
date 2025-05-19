@@ -1,19 +1,13 @@
 import os
 
-# TokenTablePath = '../DB/enUS/TokenTable.csv'
-# RuleTablePath = '../DB/RuleTable.csv'
-# VoiceTalkTablePath = '../DB/VoiceTalkTable.csv'
-# TokenListPath = '../DB/TokenList.txt'
-
 VoiceTalkDatabase = '../DB'
-# SERVER_URL = "https://class.iottalk.tw/"
-# GUI_SERVER_URL = "https://classgui.iottalk.tw/"
 SERVER_URL = "https://vt.iottalk.tw/"
 GUI_SERVER_URL = "http://vt.iottalk.tw:7788/"
 
-Dia_API_key = '../DB/Dialogflow_test1.json'
-Dia_project_id = "test1-cidr"
-STT_client_file = "../DB/stt-demo20241130"
+Dia_API_key = '../DB/Dialogflow_test20250507.json'
+STT_client_file = "../DB/stt-20250506.json"
+GPT_API_Key = ""
+Llama_API_url = ""
 
 Port = 10826
 

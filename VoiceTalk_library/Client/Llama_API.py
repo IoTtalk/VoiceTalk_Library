@@ -11,7 +11,7 @@ importlib.reload(config)
 
 class LlamaAPI:
     def __init__(self):
-        self.api_url = ""
+        self.api_url = config.Llama_API_url
     
     def main(self, method, text, project_name=None):
         self.project_name = project_name

@@ -27,7 +27,7 @@ import socket
 import csmapi, ccm_utils
 
 # whisper 相關參數
-model = whisper.load_model("base", download_root = "./whisper_model_download")
+model = whisper.load_model("medium", download_root = "./whisper_model_download")
 
 # Llama 相關參數
 api = LlamaAPI()
@@ -99,7 +99,7 @@ def modify_template(template, device_info):
 
     ServerURL = device_info["ServerURL"]
     device_model = device_info["device_model"]
-    device_name = "voice_" + device_info["device_name"]
+    device_name = device_info["device_name"] + "_ctl_" + device_info["project_name"]
     device_id = device_info["device_id"]
     IDF_list = [IDF['df_name'] for IDF in device_info["IDF_list"]]
     exec_interval = device_info["exec_interval"]
@@ -139,11 +139,9 @@ def {df_func_name(idf)}():
         for idf in IDF_list
     ])
 
-    # 插入動態生成的函式，這邊是找出 Dummy_Sensor() 前面註解的位置並取代，但其實可以直接新增到 SA 的最後面
-    modified_template = modified_template.replace(
-        "# IDF 範例，全域變數的對應 IDF list 中取得並回傳資料，回傳 None 的話 DAN 也不會 push。",
-        f"# IDF 範例，全域變數的對應 IDF list 中取得並回傳資料，回傳 None 的話 DAN 也不會 push。{idf_functions}"
-    )
+    # 插入動態生成的函式，這邊是找出 HomeAppliance_IDF() 的位置並取代，但其實可以直接新增到 SA 的最後面
+    pattern = r"def HomeAppliance_IDF\(\):\n(?:[ \t]+.*\n)*"
+    modified_template = re.sub(pattern, idf_functions, modified_template)
 
     return modified_template
 
@@ -213,7 +211,7 @@ def clear_input_device(project_name):
             ccm_utils.unbind_device(project_info["p_id"], input_device["do_id"])
         ccm_utils.delete_deviceobject(project_info["p_id"], input_device["do_id"])
 
-def wait_for_device_registration(p_id, do_id, device_name, timeout=10, interval=0.5):
+def wait_for_device_registration(project_name, p_id, do_id, device_name, timeout=10, interval=0.5):
     """
     等待設備完成註冊，並返回相應的 d_id。
     """
@@ -222,7 +220,7 @@ def wait_for_device_registration(p_id, do_id, device_name, timeout=10, interval=
         # 獲取設備清單
         device_list = ccm_utils.get_device_list(p_id, do_id)["device_info"]
         for d in device_list:
-            if d[0] == "voice_" + device_name:  # 檢查是否註冊完成
+            if d[0] == device_name + "_ctl_" + project_name:  # 檢查是否註冊完成
                 return d[2]  # 返回 d_id
         time.sleep(interval)  # 等待一段時間再重新檢查
     raise TimeoutError(f"Device '{device_name}' registration timed out.")
@@ -273,11 +271,11 @@ def generate_command_and_response(sentence, language = "en-US", project_name = N
     DAV_json = None
     if sentence != "":
         # 取得 GPT 回覆，DAV_json 為 dict('DeviceName', 'DeviceType', 'DeviceFeature', 'InputValue') 或是 None
-        # cg = promptCG()
-        # DAV_json = cg.main(project_name, sentence)
+#         cg = promptCG()
+#         DAV_json = cg.main(project_name, sentence)
         
-        print("送進 LLM 的句子:", sentence)
         # 取得 Llama 回覆，DAV_json 為 dict('DeviceName', 'DeviceType', 'DeviceFeature', 'InputValue')或是 None
+        print("送進 LLM 的句子:", sentence)
         DAV_json = api.main("CG", sentence, project_name)
 
         # print("GPT Response:", gpt_response)
@@ -518,10 +516,21 @@ def save():
         sentence = sentence["text"]
         
     elif request.form.get('using_tool') == "Dialogflow":
-        sentence = detect_intent_audio(config.Dia_project_id, f"{int(time.time())}", uploads_dir + "/"+ f_name, "en-US")
+        # 載入 Dialogflow JSON 檔案
+        try:
+            with open(config.Dia_API_key, 'r') as f:
+                Dia_project_id = json.load(f).get('project_id')
+            print("Dialogflow pid:", Dia_project_id)
+        except FileNotFoundError:
+            print("找不到指定的 JSON 檔案")
+        except json.JSONDecodeError:
+            print("JSON 格式錯誤")
+        except Exception as e:
+            print(f"發生其他錯誤：{e}")
+        sentence = detect_intent_audio(Dia_project_id, f"{int(time.time())}", uploads_dir + "/"+ f_name, "en-US")
         
     elif request.form.get('using_tool') == "STT":
-        sentence = SpeechToText(config.STT_client_file, uploads_dir + "/"+ f_name)  
+        sentence = SpeechToText(config.STT_client_file, uploads_dir + "/"+ f_name)
     
     print("*"*30)
     print("ASR result:", sentence)
@@ -675,6 +684,7 @@ def voice_control_generator(project_name):
         device["device_id"] = str(uuid.uuid4())
         device["exec_interval"] = 0.5
         device["socket_addr"] = config.get_device_socket_path(project_name, device['device_id'], "enUS")
+        device["project_name"] = project_name
         sa_code = modify_template(template_content, device)
         with open(SA_file, "w", encoding="utf-8") as f:
             f.write(sa_code)
@@ -700,7 +710,7 @@ def voice_control_generator(project_name):
     for device in input_device_list:
         do_id = device["do_id"]
         try:
-            d_id = wait_for_device_registration(p_id, do_id, device["device_name"], 5, 0.5)
+            d_id = wait_for_device_registration(project_name, p_id, do_id, device["device_name"], 5, 0.5)
             ccm_utils.bind_device(p_id, do_id, d_id)  # 綁定設備
             print(f"Device {device['device_name']} successfully bound!")
         except TimeoutError as e:
@@ -784,4 +794,29 @@ if __name__ == "__main__":
 
     load_trait_mapping(config.get_trait_management_path("enUS"))
 
+    # ================================================
+    # Voice LLM Agent – Functional Route Overview
+    # ================================================
+    # ASR (Automatic Speech Recognition):
+    #   Endpoint: /save
+    #   Description: Handles audio input from the user by:
+    #     - Saving the uploaded audio recording.
+    #     - Performing automatic speech recognition (ASR) to transcribe the audio.
+
+    # SC (Sentence Correction):
+    #   Endpoint: /SentenceCorrection
+    #   Description: Uses an LLM to correct the natural language sentence generated by ASR. 
+
+    # CG (Command Generation):
+    #   Endpoint: /ProcessSentence
+    #   Location: Function generate_command_and_response (upper part: 272~284)
+    #   Description: Generates an IoT control command in JSON format based on the corrected sentence.
+
+    # Command Interpreter:
+    #   Endpoint: /ProcessSentence
+    #   Location: Function generate_command_and_response (lower part: 286~314)
+    #   Description: Processes the generated JSON command, sends control data to the IoTtalk device via socket,
+    #                and returns the execution result as a response to the user.
+    # ================================================
+    
     app.run(host='0.0.0.0',debug=True, port=config.Port)
