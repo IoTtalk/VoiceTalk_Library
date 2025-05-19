@@ -1,0 +1,102 @@
+df_type,df_name,df_parameter,df_category,comment
+output,appInstall,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:App
+output,appSearch,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:App
+output,appSelect,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:App
+output,ArmDisarm,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Arm
+String='arm',Value=1
+String='disarm',Value=0"
+output,BrightnessAbsolute,"[{'param_type': 'int', 'min': 0, 'max': 10, 'unit_id': None}]",Other,"x-1:Brightness
+String='dark',Value=1
+String='low',Value=1
+String='medium',Value=5
+String='bright',Value=10"
+output,BrightnessRelative,"[{'param_type': 'int', 'min': -100, 'max': 100, 'unit_id': '%'}]",Other,x-1:Brightness Relative
+output,GetCameraStream,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:Camera_id
+output,selectChannel,"[{'param_type': 'int', 'min': 1, 'max': 999, 'unit_id': None}]",Other,"x-1:Channel
+String='CNN',Value=1
+String='MTV',Value=2
+String='CBS',Value=3"
+output,relativeChannel,"[{'param_type': 'int', 'min': -999, 'max': 999, 'unit_id': None}]",Other,x-1:Relative Channel
+output,returnChannel,[],Other,
+output,ColorAbsolute,"[{'param_type': 'int', 'min': 0, 'max': 10, 'unit_id': None}]",Other,"x-1:Color
+String='cool',Value=1
+String='warm',Value=10"
+output,Cook,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}, {'param_type': 'int', 'min': 0, 'max': 180, 'unit_id': 'minutes'}, {'param_type': 'int', 'min': 0, 'max': 250, 'unit_id': 'Celsius'}]",Other,"x-1:Dish Type,x-2:Cooking Time,x-3:Temperature"
+output,Dispense,"[{'param_type': 'int', 'min': 1, 'max': 1000, 'unit_id': 'ml'}, {'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Amount, x-2:Type"
+output,Dock,[],Other,
+output,Charge,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:Charge
+output,SetFanSpeed,"[{'param_type': 'int', 'min': 0, 'max': 10, 'unit_id': None}]",Other,"x-1:Fan Speed
+String='low',Value=1
+String='medium',Value=5
+String='high',Value=10"
+output,SetFanSpeedRelative,"[{'param_type': 'float', 'min': -100, 'max': 100, 'unit_id': '%'}]",Other,x-1:Fan Speed Relative
+output,Reverse,[],Other,
+output,Fill,"[{'param_type': 'float', 'min': 0, 'max': 100, 'unit_id': '%'}]",Other,"x-1:Fill
+String='empty',Value=0
+String='full',Value=100"
+output,SetHumidity,"[{'param_type': 'int', 'min': 0, 'max': 100, 'unit_id': '%'}]",Other,x-1:Humidity
+output,HumidityRelative,"[{'param_type': 'float', 'min': 0, 'max': 100, 'unit_id': '%'}]",Other,x-1:Humidity Relative
+output,SetInput,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Media Input(e.g.,USB1, HDMI2)"
+output,NextInput,[],Other,
+output,PreviousInput,[],Other,
+output,ColorLoop,"[{'param_type': 'int', 'min': 1, 'max': 3600, 'unit_id': 'seconds'}]",Other,x-1:Duration
+output,Sleep,"[{'param_type': 'int', 'min': 0, 'max': 3600, 'unit_id': 'seconds'}]",Other,x-1:Duration
+output,StopEffect,[],Other,
+output,Wake,"[{'param_type': 'int', 'min': 1, 'max': 86400, 'unit_id': 'seconds'}]",Other,x-1:Duration
+output,Locate,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:Location
+output,LockUnlock,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Lock
+String='lock',Value=1
+String='unlock',Value=0"
+output,SetModes,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:updateModeSettings
+output,EnableDisableGuestNetwork,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:Enable
+output,EnableDisableNetworkProfile,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:Enable
+output,GetGuestNetworkPassword,[],Other,
+output,TestNetworkSpeed,"[{'param_type': 'int', 'min': 0, 'max': 1000, 'unit_id': 'Mbps'}, {'param_type': 'int', 'min': 0, 'max': 1000, 'unit_id': 'Mbps'}]",Other,"x-1:testDownloadSpeed, x-2:testUploadSpeed"
+output,OnOff,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:On
+String='on',Value=1
+String='off',Value=0"
+output,OpenClose,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Open
+String='open',Value=1
+String='close',Value=0"
+output,OpenCloseRelative,"[{'param_type': 'int', 'min': 0, 'max': 100, 'unit_id': '%'}]",Other,x-1:OpenCloseRelative
+output,Reboot,[],Other,
+output,RotateAbsolute,"[{'param_type': 'float', 'min': 0, 'max': 360, 'unit_id': 'degrees'}]",Other,x-1:Rotation Degrees
+output,ActivateScene,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Deactivate
+String='deactivate',Value=1
+String='activate',Value=0"
+output,SoftwareUpdate,[],Other,
+output,StartStop,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Start
+String='start',Value=1
+String='stop',Value=0"
+output,PauseUnpause,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Pause
+String='pause',Value=1
+String='unpause',Value=0"
+output,SetTemperature,"[{'param_type': 'float', 'min': 10, 'max': 30, 'unit_id': '°C'}]",Other,"x-1:Temperature
+String='heating',Value=30
+,String='cooling',Value=10"
+output,ThermostatTemperatureSetpoint,"[{'param_type': 'float', 'min': 0, 'max': 50, 'unit_id': '°C'}]",Other,x-1:Temperature
+output,ThermostatTemperatureSetRange,"[{'param_type': 'float', 'min': 0, 'max': 50, 'unit_id': '°C'}, {'param_type': 'float', 'min': 0, 'max': 50, 'unit_id': '°C'}]",Other,"x-1:High target setpoint, x2:Low target setpoint"
+output,ThermostatSetMode,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Mode(e.g.,'heat','cool','off',and 'auto')"
+output,TemperatureRelative,"[{'param_type': 'float', 'min': -100, 'max': 100, 'unit_id': '°C'}]",Other,x-1:Temperature Relative
+output,TimerStart,"[{'param_type': 'int', 'min': 1, 'max': 86400, 'unit_id': 'seconds'}]",Other,x-1:Duration
+output,TimerAdjust,"[{'param_type': 'int', 'min': None, 'max': None, 'unit_id': 'seconds'}]",Other,x-1:Positive or negative adjustment
+output,TimerPause,[],Other,
+output,TimerResume,[],Other,
+output,TimerCancel,[],Other,
+output,SetToggles,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:Toggle Setting
+output,mediaStop,[],Other,
+output,mediaNext,[],Other,
+output,mediaPrevious,[],Other,
+output,mediaPause,[],Other,
+output,mediaResume,[],Other,
+output,mediaSeekRelative,"[{'param_type': 'int', 'min': 0, 'max': None, 'unit_id': 'milliseconds'}]",Other,x-1:Relative Position
+output,mediaSeekToPosition,"[{'param_type': 'int', 'min': 0, 'max': None, 'unit_id': 'milliseconds'}]",Other,x-1:Absolute Position
+output,mediaRepeatMode,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Repeat Mode(e.g.,'Off','Track','Queue')"
+output,mediaShuffle,[],Other,
+output,mediaClosedCaptioningOn,"[{'param_type': 'string', 'min': None, 'max': None, 'unit_id': None}]",Other,x-1:Language
+output,mediaClosedCaptioningOff,[],Other,
+output,mute,"[{'param_type': 'boolean', 'min': None, 'max': None, 'unit_id': None}]",Other,"x-1:Mute
+String='mute',Value=1
+String='unmute',Value=0"
+output,setVolume,"[{'param_type': 'int', 'min': 0, 'max': 100, 'unit_id': '%'}]",Other,x-1:Volume Level
+output,volumeRelative,"[{'param_type': 'int', 'min': -100, 'max': 100, 'unit_id': '%'}]",Other,x-1:Relative Level
