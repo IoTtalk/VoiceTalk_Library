@@ -73,8 +73,7 @@ df = df[df['df_parameter'].apply(lambda x: x != [])]
 df.index = range(len(df))
 dict_rows = df.to_dict(orient="records")
 
-# Step2: Create DFs
-# For identification purposes, the suffix "-O" is added to each df_name.
+# Step2: Create DFs(input & output)
 for row in dict_rows:
     row['df_name'] = row['df_name']+"-O"
     ccm_utils.create_devicefeature(row)
@@ -89,7 +88,7 @@ for row in dict_rows:
 
 
 #======================== Creating Device Model ================================================
-# The following process is executed within the DM Management interface shown in Figure 3 in paper, when the user 手動拖拉 create the DM.
+# The following process is executed within the DM Management interface shown in Figure 3 of the paper, when the user creates the DM through drag-and-click actions.
 # See SendData() function in VoiceTalk_library/Client/server.py
 # The code is for developers who want to create it programmatically."
 
