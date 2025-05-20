@@ -271,12 +271,12 @@ def generate_command_and_response(sentence, language = "en-US", project_name = N
     DAV_json = None
     if sentence != "":
         # 取得 GPT 回覆，DAV_json 為 dict('DeviceName', 'DeviceType', 'DeviceFeature', 'InputValue') 或是 None
-        cg = promptCG()
-        DAV_json = cg.main(project_name, sentence)
+#         cg = promptCG()
+#         DAV_json = cg.main(project_name, sentence)
         
         # 取得 Llama 回覆，DAV_json 為 dict('DeviceName', 'DeviceType', 'DeviceFeature', 'InputValue')或是 None
-#         print("送進 LLM 的句子:", sentence)
-#         DAV_json = api.main("CG", sentence, project_name)
+        print("送進 LLM 的句子:", sentence)
+        DAV_json = api.main("CG", sentence, project_name)
 
         # print("GPT Response:", gpt_response)
         print("\n\n\nGPT JSON Output:", DAV_json)
