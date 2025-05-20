@@ -1,6 +1,81 @@
 DM,Trait
-LIGHT,"['Brightness', 'ColorSetting', 'OnOff']"
-FAN,"['FanSpeed', 'OnOff']"
+AC_UNIT,"['FanSpeed', 'OnOff', 'TemperatureSetting']"
+AIRCOOLER,"['FanSpeed', 'HumiditySetting', 'OnOff', 'TemperatureSetting']"
+AIRFRESHENER,"['Modes', 'Toggles', 'OnOff']"
+AIRPURIFIER,"['FanSpeed', 'OnOff']"
+AUDIO_VIDEO_RECEIVER,"['AppSelector', 'InputSelector', 'OnOff', 'TransportControl', 'Volume']"
+AWNING,['OpenClose']
+BATHTUB,"['Fill', 'TemperatureControl', 'StartStop']"
+BED,"['Scene', 'Modes']"
+BLANKET,"['OnOff', 'Modes', 'Toggles']"
+BLENDER,"['Cook', 'StartStop', 'Timer', 'OnOff']"
+BLINDS,"['Rotation', 'OpenClose']"
+BOILER,"['TemperatureControl', 'OnOff']"
+CAMERA,['CameraStream']
+CHARGER,['EnergyStorage']
+CLOSET,['OpenClose']
+COFFEE_MAKER,"['Cook', 'TemperatureControl', 'OnOff']"
+COOKTOP,"['Cook', 'Timer', 'OnOff']"
 CURTAIN,['OpenClose']
+DEHUMIDIFIER,"['FanSpeed', 'HumiditySetting', 'StartStop', 'OnOff']"
+DEHYDRATOR,"['Cook', 'StartStop', 'Timer', 'OnOff']"
+DISHWASHER,"['OnOff', 'StartStop']"
 DOOR,"['LockUnlock', 'OpenClose']"
+DOORBELL,['CameraStream']
+DRAWER,['OpenClose']
+DRYER,"['Modes', 'OnOff', 'Toggles', 'StartStop']"
+FAN,"['FanSpeed', 'OnOff']"
+FAUCET,"['Dispense', 'StartStop', 'TemperatureControl']"
+FIREPLACE,"['Modes', 'Toggles', 'OnOff']"
+FREEZER,['TemperatureControl']
+FRYER,"['Cook', 'StartStop', 'Timer', 'OnOff']"
+GAME_CONSOLE,"['InputSelector', 'Volume', 'AppSelector', 'OnOff', 'TransportControl']"
+GARAGE,"['LockUnlock', 'OpenClose']"
+GATE,"['LockUnlock', 'OpenClose']"
+GRILL,"['Cook', 'OnOff', 'Timer', 'StartStop']"
+HEATER,"['FanSpeed', 'TemperatureSetting']"
+HOOD,"['Brightness', 'FanSpeed', 'OnOff']"
+HUMIDIFIER,"['FanSpeed', 'HumiditySetting', 'StartStop', 'OnOff']"
+KETTLE,"['TemperatureControl', 'OnOff']"
+LIGHT,"['ColorSetting', 'Brightness', 'OnOff']"
+LOCK,['LockUnlock']
+MICROWAVE,"['Cook', 'Timer', 'StartStop']"
+MOP,"['EnergyStorage', 'Locator', 'OnOff', 'StartStop']"
+MOWER,"['EnergyStorage', 'Locator', 'OnOff', 'StartStop']"
+MULTICOOKER,"['Cook', 'StartStop', 'Timer', 'OnOff']"
+NETWORK,['NetworkControl']
+OUTLET,['OnOff']
+OVEN,"['Cook', 'TemperatureControl', 'Timer', 'OnOff']"
+PERGOLA,"['Rotation', 'OpenClose']"
+PETFEEDER,"['OnOff', 'StartStop', 'Dispense']"
+PRESSURECOOKER,"['Cook', 'Timer', 'OnOff']"
+PUMP,['OnOff']
+RADIATOR,"['Modes', 'Toggles', 'OnOff']"
+REFRIGERATOR,['TemperatureControl']
+REMOTECONTROL,"['AppSelector', 'Channel', 'InputSelector', 'OnOff', 'TransportControl', 'Volume']"
+ROUTER,['NetworkControl']
+SCENE,['Scene']
+SECURITYSYSTEM,['ArmDisarm']
+SENSOR,['EnergyStorage']
+SETTOP,"['Volume', 'AppSelector', 'Channel', 'OnOff', 'TransportControl']"
+SHOWER,"['StartStop', 'TemperatureControl']"
+SHUTTER,"['Rotation', 'OpenClose']"
+SOUNDBAR,"['AppSelector', 'InputSelector', 'OnOff', 'TransportControl', 'Volume']"
+SOUSVIDE,"['Cook', 'StartStop', 'Timer', 'OnOff']"
+SPEAKER,"['AppSelector', 'InputSelector', 'OnOff', 'TransportControl', 'Volume']"
+SPRINKLER,"['Timer', 'StartStop']"
+STANDMIXER,"['Cook', 'StartStop', 'OnOff']"
+STREAMING_BOX,"['Channel', 'InputSelector', 'AppSelector', 'OnOff', 'TransportControl', 'Volume']"
+STREAMING_SOUNDBAR,"['InputSelector', 'AppSelector', 'OnOff', 'TransportControl', 'Volume']"
+STREAMING_STICK,"['OnOff', 'AppSelector', 'TransportControl', 'Volume']"
+SWITCH,"['Brightness', 'OnOff']"
+THERMOSTAT,['TemperatureSetting']
+TV,"['Channel', 'AppSelector', 'InputSelector', 'OnOff', 'TransportControl', 'Volume']"
+VACUUM,"['EnergyStorage', 'Locator', 'OnOff', 'StartStop']"
+VALVE,['OpenClose']
+WASHER,"['Modes', 'OnOff', 'Toggles', 'StartStop']"
+WATERHEATER,"['TemperatureControl', 'OnOff']"
+WATERPURIFIER,['OnOff']
+WATERSOFTENER,['OnOff']
 WINDOW,"['LockUnlock', 'OpenClose']"
+YOGURTMAKER,"['Cook', 'StartStop', 'Timer', 'OnOff']"

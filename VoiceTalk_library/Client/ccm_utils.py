@@ -11,8 +11,16 @@ def create_project(project_name: str):
     return status, res
     
 def get_project(project_name: str):
+    # 如果專案名稱是一串數字的話會變成以 p id 查詢，所以改用 get_project_by_name
     response = requests.get(CCM_API_URL + 'project/' + project_name + '/').json()
     print(CCM_API_URL + 'project/' + project_name + '/')
+    status = response["state"] =="ok"
+    res = response["data"] if status else response["reason"]
+    return status, res
+
+def get_project_by_name(project_name: str):
+    response = requests.get(CCM_API_URL + 'project/prj_name/' + project_name + '/').json()
+    print(CCM_API_URL + 'project/prj_name/' + project_name + '/')
     status = response["state"] =="ok"
     res = response["data"] if status else response["reason"]
     return status, res

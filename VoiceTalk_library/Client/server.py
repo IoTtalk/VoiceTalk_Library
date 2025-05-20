@@ -27,7 +27,7 @@ import socket
 import csmapi, ccm_utils
 
 # whisper 相關參數
-model = whisper.load_model("medium", download_root = "./whisper_model_download")
+model = whisper.load_model("base", download_root = "./whisper_model_download")
 
 # Llama 相關參數
 api = LlamaAPI()
@@ -202,7 +202,7 @@ def get_device_info(project_name):
     return device_info
 
 def clear_input_device(project_name):
-    status, project_info = ccm_utils.get_project(project_name)
+    status, project_info = ccm_utils.get_project_by_name(project_name)
     for network_application in project_info["na"]:
         ccm_utils.delete_networkapplication(project_info["p_id"], network_application["na_id"])
     for input_device in project_info["ido"]:
@@ -271,12 +271,12 @@ def generate_command_and_response(sentence, language = "en-US", project_name = N
     DAV_json = None
     if sentence != "":
         # 取得 GPT 回覆，DAV_json 為 dict('DeviceName', 'DeviceType', 'DeviceFeature', 'InputValue') 或是 None
-#         cg = promptCG()
-#         DAV_json = cg.main(project_name, sentence)
+        cg = promptCG()
+        DAV_json = cg.main(project_name, sentence)
         
         # 取得 Llama 回覆，DAV_json 為 dict('DeviceName', 'DeviceType', 'DeviceFeature', 'InputValue')或是 None
-        print("送進 LLM 的句子:", sentence)
-        DAV_json = api.main("CG", sentence, project_name)
+#         print("送進 LLM 的句子:", sentence)
+#         DAV_json = api.main("CG", sentence, project_name)
 
         # print("GPT Response:", gpt_response)
         print("\n\n\nGPT JSON Output:", DAV_json)
@@ -544,10 +544,10 @@ def voice_control_generator(project_name):
     global feature_to_trait
     
     # 先檢查 project 是否存在
-    status, project_info = ccm_utils.get_project(project_name)
+    status, project_info = ccm_utils.get_project_by_name(project_name)
     if status == False:
-        return f"project({project_name}) does not exist."
-    
+        return jsonify(error=f"Project({project_name}) does not exist.")
+        
     # 先清除原本 project 中的 input device，以及所有的 join function
     clear_input_device(project_name)
     # 清除 voicetalk 控制的 project devices
@@ -560,14 +560,24 @@ def voice_control_generator(project_name):
         
     # 檢查 output device 是否存在
     if project_info["odo"] == []:
-        return f"There is no output device in the project({project_name})."
+        return jsonify(error=f"There is no output device in the project({project_name}).")
 
+    # 檢查使用的 DM 是否為 Management 頁面產生的(存在於 DB 中)
+    df = pd.read_csv(config.get_dm_management_path("enUS"), dtype={'DM': 'string', 'Trait': 'string'})
+    DM_set = set(df["DM"])
+    invalid_DM = []
+    for odo in project_info["odo"]:
+        if odo["dm_name"] not in DM_set:
+            invalid_DM.append(odo["dm_name"])
+    if len(invalid_DM) > 0:
+        return jsonify(error=f"Unrecognized DM name found: {invalid_DM}. To add or manage DM settings, please visit the /VoiceTalkManagement page.")
+    
     # 1. 讀取 project 資料，取得 output device 資料。
     # 2. 根據 output device，使用 ccmapi 建立 input device。
     # 3. 自動連線。
     # 4. 產生 SA code 並註冊 input devcie 實體，device name 使用與 output device 一樣的 d_name，前面加上 voicectl_ 前墜，方便識別，socket 通訊介面名稱使用 device ID。
     # 5. Binding Device
-
+    
     # 1. ~ 2.
     # 取得 project 資料，讀取 output device 資訊，並記錄 input device 需要資訊。
 #     status, project_info = ccm_utils.get_project(project_name)
@@ -586,7 +596,7 @@ def voice_control_generator(project_name):
         if odo["d_name"]:
             ido_info["device_name"] = odo["d_name"] # device
         else:
-            return f"output device is not binding"
+            return jsonify(error=f"Output device is not binding")
         ido_info["device_model"] = odo["dm_name"] # device model
         ido_info["IDF_list"] = [] # IDF
         ido_info["dm_id"] = odo["dm_id"]
@@ -638,7 +648,7 @@ def voice_control_generator(project_name):
     # ]
 
     # 3. 自動連線。
-    status, project_info = ccm_utils.get_project(project_name)
+    status, project_info = ccm_utils.get_project_by_name(project_name)
     p_id = project_info["p_id"]
 
     for ido, odo in zip(project_info["ido"], project_info["odo"]):
@@ -740,9 +750,9 @@ def voice_control_generator(project_name):
     df.to_csv(config.get_project_database_path(project_name, "enUS"), index=False)
 
     print("project_devices_info:", project_devices_info)
-    
+    print(f"return URL: {url_for('control', project_name=project_name, _external=True, _scheme='https')}")
     # 回傳 @app.route 下方對應函數名稱為 "control" 的 route 網址
-    return url_for('control', project_name=project_name, _external=True, _scheme='https')
+    return jsonify(url=url_for('control', project_name=project_name, _external=True, _scheme='https'))
 
 @app.route('/control/<project_name>', methods=['GET'])
 def control(project_name):
@@ -750,7 +760,7 @@ def control(project_name):
     device_info = get_device_info(project_name)
     # 若找不到專案的 database，直接提示使用者去 iottalk project 建立。
     if device_info == None:
-        return f"project({project_name}) does not exist."
+        return jsonify(error=f"Project({project_name}) does not exist.")
 
     # 檢查 device_info 中的 deivce 是否都有啟動，並嘗試重啟未啟動的 device
     try:
@@ -781,7 +791,7 @@ def control(project_name):
                 p.start()
         project_devices_info[project_name] = device_control_info
     except:
-        return f"device restart failed."
+        return jsonify(error=f"Device restart failed.")
 
     return render_template("index.html", device_info = device_info, project_name = project_name) # response message add here
 

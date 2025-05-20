@@ -5,3 +5,26 @@ ColorSetting,['ColorAbsolute']
 OpenClose,"['OpenClose', 'OpenCloseRelative']"
 OnOff,['OnOff']
 LockUnlock,['LockUnlock']
+AppSelector,"['appInstall', 'appSearch', 'appSelect']"
+ArmDisarm,['ArmDisarm']
+CameraStream,['GetCameraStream']
+Channel,"['selectChannel', 'relativeChannel']"
+Cook,['Cook']
+Dispense,['Dispense']
+EnergyStorage,['Charge']
+Fill,['Fill']
+HumiditySetting,"['HumidityRelative', 'SetHumidity']"
+InputSelector,['SetInput']
+LightEffects,"['ColorLoop', 'Sleep', 'Wake']"
+Locator,['Locate']
+Modes,['SetModes']
+NetworkControl,"['EnableDisableGuestNetwork', 'EnableDisableNetworkProfile', 'TestNetworkSpeed']"
+Rotation,['RotateAbsolute']
+Scene,['ActivateScene']
+StartStop,"['StartStop', 'PauseUnpause']"
+TemperatureControl,['SetTemperature']
+TemperatureSetting,"['ThermostatSetMode', 'ThermostatTemperatureSetRange', 'ThermostatTemperatureSetpoint', 'TemperatureRelative']"
+Timer,"['TimerAdjust', 'TimerStart']"
+Toggles,['SetToggles']
+TransportControl,"['mediaSeekRelative', 'mediaRepeatMode', 'mediaSeekToPosition', 'mediaClosedCaptioningOn']"
+Volume,"['setVolume', 'volumeRelative', 'mute']"
