@@ -125,6 +125,13 @@ python server.py
 
 ---
 
+## 🎬 Demo 影片
+
+以下為 VoiceTalk 的實際操作展示：
+👉 [Demo 影片連結](https://youtu.be/Ib2J3VtBXIw)
+
+---
+
 ## 🔊 語音資料來源說明
 
 本專案共使用 **1,733 筆語音資料**，包含：
