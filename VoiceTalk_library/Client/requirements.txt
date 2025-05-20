@@ -1,13 +1,10 @@
 pandas
-numerizer
-pint
-flask
-inflect
-tabulate
+openai-whisper
+urllib3==1.26.6
 openai
 google-cloud
 google-cloud-vision
 google-cloud-speech
 google-cloud-dialogflow
-pint==0.22
-numpy<2
+flask
+paho-mqtt~=1.6.1
