@@ -15,9 +15,8 @@ import VoiceTalk_library.Client.ccm_utils as ccm_utils
 os.environ['OPENAI_API_KEY'] = ""
 #======================== GPT Prompt ==========================================
 
-# DF_Prompt
-# "Command" appears in the "df_name" column of ./DF_Structure.csv, which is the organized output from DF_Prompt. 
-# Among the 69 commands, 19 do not have parameters, so only 50 Device Features were built in IoTtalk.
+# All_DF_Prompt
+# ./DF_Structure.csv is the organized output from All_DF_Prompt. 
 All_DF_Prompt = f"""
 For every Command in Google Home (e.g., BrightnessAbsolute), build a table with the following fields:
 1.DF Name: Fill in the Command name (e.g., BrightnessAbsolute).

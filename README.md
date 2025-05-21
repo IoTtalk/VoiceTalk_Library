@@ -93,10 +93,12 @@ STT_client_file = "../DB/stt-20250506.json"
     ```python
     Llama_API_url = "<domain>:<port>/chat"
     ```
+    Llama server 的使用說明可以參考：[🦙LLaMA Server 部署與使用說明](https://hackmd.io/@kiriku0825/rkl6Ph5Zll)
 - 使用 ChatGPT：
     ```python
     GPT_API_Key = "sk-proj-..."
     ```
+    API 申請方式可以參考：[金鑰申請方法](https://hackmd.io/@claireshen/Hyo-vn9bel)
     並修改 `/VoiceTalk_library/Client/server.py` 中的以下兩處程式碼：
     1. 在 SentenceCorrection() 中：
         - 解除 [GPT 區塊](https://github.com/IoTtalk/VoiceTalk_Library/blob/f3007a5f014ba476542d88b1043148db46d7c72e/VoiceTalk_library/Client/server.py#L433~L434) 注解
