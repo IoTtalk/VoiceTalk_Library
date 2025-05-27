@@ -362,7 +362,8 @@ app = Flask(__name__)
 # VoiceTalk Management:主畫面
 @app.route('/VoiceTalkManagement',methods=['POST','GET']) 
 def index_iottalk():
-    return render_template("VT_Management.html")
+    iottalk_url = config.GUI_SERVER_URL
+    return render_template("VT_Management.html", iottalk_url=iottalk_url)
 
 # VoiceTalk Management:更新 Device Feature
 @app.route('/UpdateDF')
