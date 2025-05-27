@@ -1,4 +1,4 @@
-# VoiceTalk Library
+# VoiceTalk Github README
 
 VoiceTalk 是一套專為 [IoTtalk](https://github.com/IoTtalk/IoTtalk-py) 平台設計的語音控制外掛子系統，透過大型語言模型（LLM）、CCM子系統以及圖形化介面，讓使用者無需撰寫程式碼，即可建立可被語音控制的物聯網應用。 
 
@@ -12,6 +12,47 @@ VoiceTalk 是一套專為 [IoTtalk](https://github.com/IoTtalk/IoTtalk-py) 平�
 - 整合 LLM 自動解析 Google Home 設定並轉換為 IoTtalk 設定
 - 簡化場域建立流程，自動建立 IoTtalk 裝置模型與控制網路應用
 - Web 介面可視化管理與語音控制
+
+---
+
+##    專案目錄結構
+
+```
+VoiceTalk_Library/
+├── Device_LLM_Agent/                        # 處理第三方智慧家庭控制平台(Google Home) → IoTtalk 的設備資料轉換
+│   └── Device_LLM_Agent.py                  # Device LLM Agent 主程式，可進行設備資料轉換與使用 ccm api 批次建立 DM
+├── old_version/                             # 舊版本備份程式碼
+├── test_audio/                              # 測試語音資料（共 1733 筆）
+└── VoiceTalk_library/                       # VoiceTalk 的 Web 前端與主程式以及所需檔案
+    ├── Client/                   
+    │   ├── instance/                        # 使用者的語音控制錄音
+    │   │   └── audios/                      # 單通道音檔
+    │   │       └── org_file/                # 上傳時保留的原始語音檔案
+    │   ├── static/                          # 靜態網頁資源
+    │   │   ├── css/              
+    │   │   ├── images/           
+    │   │   └── js/               
+    │   ├── templates/                       # Flask 用的 HTML 頁面模板
+    │   │   └── base.html                    # 頁面共用框架模板（如標頭、載入腳本）
+    │   │   └── index.html                   # 語音控制主頁，提供語音輸入與控制功能
+    │   │   └── VoiceTalk Management.html    # 語音控制設備管理頁，顯示裝置與控制設定
+    │   ├── whisper_model_download/          # Whisper 語音模型檔案
+    │   ├── csmapi.py                        # IoTtalk DA 模組 （含 csmapi、DAN、DAI）
+    │   ├── DAN.py                           
+    │   ├── DAI.py                           
+    │   ├── SA.py                            # IoTtalk SA 模組 (VoiceTalk 自動產生 SA 所需的模板)
+    │   ├── Dialogflow_API.py                # 語音辨識 API (串接 Google Dialogflow 的 API)
+    │   ├── STT_API.py                       # 語音辨識 API (串接 Google Speech-to-Text 的 API)
+    │   ├── GPT_API.py                       # LLM API (呼叫 OpenAI GPT 模型的 API，用來執行 SC/CG prompt)
+    │   ├── Llama_API.py                     # LLM API (呼叫自架 LLaMA 模型的 API，用來執行 SC/CG prompt)
+    │   ├── ccm_utils.py                     # 需用到的 IoTtalk CCM API
+    │   ├── config.py                        # server 參數、API 路徑、檔案路徑
+    │   ├── server.py                        # 主伺服器程式，處理設備管理、語音輸入與控制流程
+    │   └── requirements.txt                 # 安裝所需套件列表
+    └── DB/                                  # 儲存金鑰、設備模型對應關係(DM 對應 Trait、Trait 對應 DF)以及場域中的設備資訊
+        ├── cmnHantTW/                       # 中文繁體語料與設定
+        └── enUS/                            # 英文語料與設定
+```
 
 ---
 
@@ -42,7 +83,6 @@ VoiceTalk 架構中的主要功能：
 - linux 系統
 - Python 3.9
 - 建議使用虛擬環境 (venv)
-
 
 ### 下載程式碼
 
