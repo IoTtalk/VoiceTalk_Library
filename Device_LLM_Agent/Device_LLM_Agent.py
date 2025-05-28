@@ -1,6 +1,8 @@
 import os 
 import re
+import ast
 import sys
+import pandas as pd
 import requests
 from openai import OpenAI
 import importlib
@@ -57,12 +59,9 @@ for Prompt in [All_DF_Prompt, Trait_Prompt, Device_Type_Prompt]:
 
 #======================== GPT Prompt End ==========================================
 
-
 # Using the CCM API to create DF(Device Feature) and DM(Device Model).
 # CCM API:
 ccm_utils.CCM_API_URL = config.GUI_SERVER_URL + "api/v0/"
-
-
 #======================== Creating Device Feature ==========================================
 
 # Step1: Converting the DataFrame into a list of dictionaries. [{...}, {...}, ...]
@@ -124,7 +123,7 @@ def create_dm_info(new_data):
 
 for i in range(len(dm)):
     new_data = dm.iloc[i:i+1] 
-    if new_data['Trait']!=[]:
+    if new_data['Trait'].iloc[0]:
         # Step1: Preparing data for CCM to create the DM
         dm_info = create_dm_info(new_data)
         # Step2: Create the DM
