@@ -68,11 +68,12 @@ VoiceTalk 架構中的主要功能：
 整體流程如下：
 1. Device LLM Agent 從 Google Home 結構匯入設備資訊。
 2. Device LLM Agent 自動建立對應 DM/DF。
-3. 使用者於 IoTtalk 專案中的 Model list 點擊「VoiceCtl」。
-4. VoiceTalk 透過 CCM 子系統自動完成 IoTtalk 專案。
-5. 系統自動產生對應的遙控設備。
-6. 自動建立語音控制頁面，並回傳頁面 URL 以 QR Code 呈現於 IoTtalk。
-7. 使用者即可透過語音開始控制裝置，指令將由 Voice LLM Agent 處理並傳送至 IoTtalk。
+3. 在 IoTtalk 中建立 VoiceCtl 裝置，IDF/ODF 可任意選擇，IoTtalk 將自動辨識 DM 名稱為 VoiceCtl 的特殊用途。
+4. 使用者於 IoTtalk 專案中的 Model list 點擊「VoiceCtl」。
+5. VoiceTalk 透過 CCM 子系統自動完成 IoTtalk 專案。
+6. 系統自動產生對應的遙控設備。
+7. 自動建立語音控制頁面，並回傳頁面 URL 以 QR Code 呈現於 IoTtalk。
+8. 使用者即可透過語音開始控制裝置，指令將由 Voice LLM Agent 處理並傳送至 IoTtalk。
 
 ---
 
