@@ -133,8 +133,10 @@ STT_client_file = "../DB/stt-20250506.json"
 - 使用 Llama：
     ```python
     Llama_API_url = "<domain>:<port>/chat"
+    Llama_API_key = 'API_key'
     ```
-    Llama server 的使用說明可以參考：[🦙LLaMA Server 部署與使用說明](https://hackmd.io/@kiriku0825/rkl6Ph5Zll)
+    目前使用實驗室的共用 Llama API，需要 API key，請參考 [use_ollama](https://github.com/IoTtalk/AgriGraphRAG/blob/master/create_graph/use_ollama.py)
+    (目前不使用這個) Llama server 的使用說明可以參考：[🦙LLaMA Server 部署與使用說明](https://hackmd.io/@kiriku0825/rkl6Ph5Zll)
 - 使用 ChatGPT：
     ```python
     GPT_API_Key = "sk-proj-..."

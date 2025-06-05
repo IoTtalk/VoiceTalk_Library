@@ -12,7 +12,9 @@ importlib.reload(config)
 class LlamaAPI:
     def __init__(self):
         self.api_url = config.Llama_API_url
-    
+        self.api_key = config.Llama_API_key
+        self.model = 'llama3.3'
+        
     def main(self, method, text, project_name=None):
         self.project_name = project_name
 
@@ -80,14 +82,17 @@ class LlamaAPI:
         return prompt
          
     def send_request(self):
+        headers = {'Content-Type': 'application/json', "Authorization": f"Bearer {self.api_key}"}
         payload = {
-            "message": self.prompt,
-            "history": []
+            'model': self.model,
+            'prompt': self.prompt,
+            'stream': False,  # set to True if you want to handle streamed responses
+            "keep_alive": -1
         }
         try:
-            response = requests.post(self.api_url, json=payload)
-            response_text = response.json()['response']
-            return response_text
+            response = requests.post(self.api_url, json=payload, headers=headers)
+            data = response.json()
+            return data.get('response')
         except requests.RequestException as e:
             print(f"Llama Post Request failed: {e}")
             return None

@@ -1,13 +1,14 @@
 import os
 
 VoiceTalkDatabase = '../DB'
-SERVER_URL = "https://vt.iottalk.tw/"
-GUI_SERVER_URL = "http://vt.iottalk.tw:7788/"
+SERVER_URL = "https://iot.iottalk.tw/"
+GUI_SERVER_URL = "https://iotgui.iottalk.tw/"
 
 Dia_API_key = '../DB/Dialogflow_test20250507.json'
 STT_client_file = "../DB/stt-20250506.json"
 GPT_API_Key = ""
 Llama_API_url = ""
+Llama_API_key = ""
 
 Port = 10826
 

@@ -294,7 +294,7 @@ def generate_command_and_response(sentence, language = "en-US", project_name = N
             DeviceFeature = DAV_json.get("DeviceFeature")
             InputValue = DAV_json.get("InputValue")
             Trait = feature_to_trait.get(DeviceFeature.split("-I")[0], "NotDefineTrait")
-            if DeviceName and DeviceFeature and InputValue:
+            if (DeviceName != None) and (DeviceFeature != None) and (InputValue != None):
                 if check_device_and_IDF(project_name, DeviceName, DeviceFeature):
                     server_address = project_devices_info[project_name][DeviceName]["socket_addr"]
                     sock = connect(server_address)
